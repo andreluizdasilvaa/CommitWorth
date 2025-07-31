@@ -1,4 +1,4 @@
-import { IdCardLanyard, LucideProps, LucideIcon } from "lucide-react";
+import { LucideIcon } from "lucide-react";
 
 interface CardInfo {
     icon: LucideIcon;

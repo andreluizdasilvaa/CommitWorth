@@ -1,8 +1,15 @@
 import type { Metadata } from "next";
-import { Lalezar } from 'next/font/google'
+import { Lalezar, Inter } from 'next/font/google'
+import { Toaster } from "sonner";
 import "./globals.css";
 
 const lalezar = Lalezar({
+  subsets: ['latin'],
+  weight: ['400', '400'],
+  display: 'swap',
+})
+
+const inter = Inter({
   subsets: ['latin'],
   weight: ['400', '400'],
   display: 'swap',
@@ -30,8 +37,10 @@ export default function RootLayout({
     <html lang="pt-BR">
       <body
         className={`antialiased`}
+        cz-shortcut-listen="true"
       >
-        {children}
+            <Toaster position="bottom-right" />
+            {children}
       </body>
     </html>
   );
