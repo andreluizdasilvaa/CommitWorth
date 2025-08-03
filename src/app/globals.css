@@ -31,4 +31,22 @@ html {
   --color-secondarypurple: #613DC1;
   --color-secondarygreen: #32E875;
   --color-secondaryyellow: #E3B341;
+
+  --animation-gradient: gradient 8s linear infinite;
+}
+
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.animate-gradient {
+  animation: var(--animation-gradient);
 }

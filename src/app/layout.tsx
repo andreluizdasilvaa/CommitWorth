@@ -11,7 +11,7 @@ const lalezar = Lalezar({
 
 const inter = Inter({
   subsets: ['latin'],
-  weight: ['400', '400'],
+  weight: ['400', '900'],
   display: 'swap',
 })
 

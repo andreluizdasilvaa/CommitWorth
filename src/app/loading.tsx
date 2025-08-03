@@ -1,7 +1,7 @@
-"use client"
 
 
-export function LoadingScreen() {
+
+export default function Loading() {
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-xl">
             <div className="flex-col gap-4 w-full flex items-center justify-center">

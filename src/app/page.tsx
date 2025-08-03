@@ -1,12 +1,13 @@
-import React from "react";
-import Image from "next/image";
-import { Container } from "@/components/container";
-import { IdCard, IdCardLanyard, Gamepad, SmilePlus } from "lucide-react";
-import { Header } from "@/components/header";
-import DarkVeil from '@/components/darkVeil';
-import { InputForm } from "@/components/inputForm";
+import React from "react"
+import Image from "next/image"
+import { Container } from "@/components/container"
+import { IdCard, IdCardLanyard, Gamepad, SmilePlus } from "lucide-react"
+import { Header } from "@/components/header"
+import DarkVeil from '@/components/darkVeil'
+import { InputForm } from "@/components/inputForm"
 import githubHero from '@/assets/github-hero.png'
-import { CardInfo } from "@/components/cardInfo";
+import { CardInfo } from "@/components/cardInfo"
+import { GradientText } from "@/components/gradientText"
 
 export default function Home() {
     return (
@@ -25,14 +26,19 @@ export default function Home() {
                                 <span className="text-secondarygreen text-shadow-lg font-medium">Seu card 100% gratuito!</span>
                             </div>
 
-                            <h1 className="leading-16 max-sm:leading-12 text-6xl max-sm:text-5xl text-primarybege font-lalezar">Veja Quanto Você Gerou de valor com Seus <span className="bg-gradient-to-r from-secondarypurple to-secondarygreen bg-clip-text text-transparent">Commits</span> no GitHub!
+                            <h1 className="leading-1bhnhh6 max-sm:leading-12 text-6xl max-sm:text-5xl text-primarybege font-lalezar">
+                                Veja Quanto Você Gerou de valor com Seus <GradientText
+                                    colors={["#613DC1", "#32E875", "#E3B341", "#4079ff", "#40ffaa"]}
+                                    animationSpeed={4}
+                                    showBorder={false}
+                                    className=""
+                                >Commits</GradientText> do github!
                             </h1>
-
                             <InputForm />
-                            
+
                         </div>
 
-                        <Image 
+                        <Image
                             src={githubHero}
                             alt="Gihub foto"
                             className="max-w-500 flex max-xl:hidden"
@@ -43,19 +49,19 @@ export default function Home() {
                         <h2 className="text-3xl max-xl:text-center font-bold text-primarybege">Como funciona?</h2>
 
                         <div className="flex flex-wrap justify-around max-xl:justify-center mt-3 gap-6">
-                            <CardInfo 
+                            <CardInfo
                                 icon={IdCardLanyard}
                                 description="Veja seus commits, repositórios e linguagens mais usadas. O CommitWorth analisa seus dados para mostrar sua evolução como desenvolvedor."
                                 title="Adicione seu GitHub"
                             />
 
-                            <CardInfo 
+                            <CardInfo
                                 icon={Gamepad}
                                 description="Seu valor é calculado com base na qualidade dos commits, PRs aceitos e engajamento na comunidade. Quanto mais você contribui de forma relevante, maior será seu reconhecimento."
                                 title="Estatísticas e Ranking"
                             />
 
-                            <CardInfo 
+                            <CardInfo
                                 icon={SmilePlus}
                                 description="Geramos um card exclusivo com seu valor acumulado, pronto para compartilhar no LinkedIn, Twitter e outras redes sociais. Destaque sua dedicação ao open-source!"
                                 title="Compartilhe seu Impacto"

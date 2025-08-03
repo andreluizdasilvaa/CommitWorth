@@ -1,7 +1,6 @@
-import type { Metadata } from "next";
+import type { Metadata } from "next"
 import { Lalezar } from 'next/font/google'
-import { UserProvider } from "@/context/User";
-import { Header } from "@/components/header";
+import { Header } from "@/components/header"
 
 const lalezar = Lalezar({
     subsets: ['latin'],
@@ -30,9 +29,7 @@ export default function RootLayout({
     return (
         <>
             <Header isDashboard={true} />
-            <UserProvider>
-                {children}
-            </UserProvider>
+            {children}
         </>
-    );
+    )
 }

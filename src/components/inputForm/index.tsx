@@ -18,7 +18,14 @@ export function InputForm() {
             return;
         }
         setLoading(true)
-        router.replace(`/dashboard/?user=${input}`)
+        const response = await fetch('https://api.github.com/users/andreluizdasilvaa')
+        if(!response || response.status === 404) {
+            toast.warning("Usuário não encontrado, envie um usenick valido")
+            setLoading(false)
+            return;
+        }
+        
+        router.replace(`/dashboard/${input}`)
     }
 
     return (

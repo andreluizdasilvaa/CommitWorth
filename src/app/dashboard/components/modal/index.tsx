@@ -16,7 +16,7 @@ export function Modal() {
             return;
         }
 
-        router.replace(`/dashboard/?user=${userNick}`)
+        router.replace(`/dashboard/${userNick}`)
     }
 
     return (
