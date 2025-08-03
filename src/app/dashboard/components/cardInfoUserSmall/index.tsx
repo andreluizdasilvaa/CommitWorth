@@ -9,7 +9,7 @@ interface CardInfoUserSmallProps {
 
 export function CardInfoUserSmall({ title, Icon, value, className }: CardInfoUserSmallProps) {
     return (
-        <div className={`flex flex-col gap-5 w-full rounded-2xl bg-primaryblue p-5 pb-10 ${className || ""}`}>
+        <div className={`flex flex-col gap-5 w-full rounded-2xl bg-primaryblue p-5 pb-10 shadow-2xl ${className || ""}`}>
             <div className='flex items-center justify-between'>
                 <p className='text-xl text-primarybege font-inter font-bold'>{title}</p>
 

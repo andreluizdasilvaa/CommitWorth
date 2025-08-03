@@ -3,7 +3,7 @@ import Image from "next/image"
 import { Container } from "@/components/container"
 import { IdCard, IdCardLanyard, Gamepad, SmilePlus } from "lucide-react"
 import { Header } from "@/components/header"
-import DarkVeil from '@/components/darkVeil'
+import DarkVeil from '@/components/darkVeilBG'
 import { InputForm } from "@/components/inputForm"
 import githubHero from '@/assets/github-hero.png'
 import { CardInfo } from "@/components/cardInfo"

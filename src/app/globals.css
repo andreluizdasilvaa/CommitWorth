@@ -11,14 +11,28 @@ button {
   cursor: pointer;
 }
 
-/* ::-webkit-scrollbar {
+::-webkit-scrollbar {
   display: none;
 }
 
 html {
   -ms-overflow-style: none;
   scrollbar-width: none;
-} */
+}
+
+@keyframes pulse-scale {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.08);
+  }
+}
+
+.pulse-scale {
+  animation: pulse-scale 1.2s ease-in-out infinite;
+}
+
 
 @theme {
   --font-lalezar: "Lalezar";

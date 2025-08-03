@@ -28,7 +28,6 @@ export default function RootLayout({
 }>) {
     return (
         <>
-            <Header isDashboard={true} />
             {children}
         </>
     )

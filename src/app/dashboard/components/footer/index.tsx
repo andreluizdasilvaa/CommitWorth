@@ -1,0 +1,139 @@
+"use client"
+
+import { useRef } from "react"
+import { toPng } from "html-to-image"
+import { Logo } from '@/components/logo';
+import Image from "next/image";
+import githubLogo from '@/assets/github-logo.svg'
+
+interface CardFooter {
+    valorAgregado: number;
+    totalCommits: number;
+    pontosTotais: number;
+    name: string;
+    userNick: string;
+    avatar_url: string;
+}
+
+export function Footer({
+    avatar_url,
+    name,
+    pontosTotais,
+    totalCommits,
+    userNick,
+    valorAgregado
+}:CardFooter) {
+    const cardRef = useRef<HTMLDivElement>(null)
+
+  const handleDownload = async () => {
+    if (!cardRef.current) return
+
+    try {
+      const dataUrl = await toPng(cardRef.current, { cacheBust: true })
+
+      const link = document.createElement("a")
+      link.download = "meu-card.png"
+      link.href = dataUrl
+      link.click()
+    } catch (err) {
+      console.error("Erro ao gerar imagem:", err)
+    }
+  }
+
+    return (
+        <footer className="w-full">
+            <div className="flex items-center justify-center xl:justify-between flex-wrap px-4 sm:px-12 pb-4 sm:pt-12 h-full bg-primaryblue rounded-t-3xl gap-8">
+
+                <div className="flex items-center justify-center max-w-[500px] max-h-[257px] scale-[0.30] sm:scale-[0.45] ">
+
+                    <div ref={cardRef} className='flex flex-col items-center justify-between bg-primarydark pt-5 px-8 w-full min-w-[1200px] min-h-[630px] scale-90'> 
+                        <div className='flex flex-col w-full gap-2'>
+                            <Logo 
+                                isImg={true}
+                                className="opacity-50" 
+                            />
+
+                            <h1
+                            className='text-primarybege text-5xl text-center mx-auto font-black max-w-2xl'
+                            >Veja Quanto eu Gerei com meus <span className="bg-gradient-to-r from-secondarypurple to-secondarygreen bg-clip-text text-transparent">Commits</span> no GitHub!</h1>
+                        </div>
+                        
+
+                        <div className='w-full rounded-t-2xl bg-primaryblue px-6 pt-6'>
+                            <div className='flex justify-between'>
+
+                                <div className='flex flex-wrap gap-3 items-start w-full max-w-xl'>
+
+                                    <div className="flex items-center justify-center gap-2 w-fit px-2.5 py-1 rounded-full border-1 border-secondarygreen shadow-[0_0_8px_2px_rgba(126,197,67,0.5)]">
+                                        <div className='w-3 h-3 rounded-full bg-secondarygreen' />
+                                        <span className="text-secondarygreen text-shadow-lg font-medium">Commitador consistente</span>
+                                    </div>
+
+                                </div>
+
+                                <div className="flex gap-4 items-center justify-end">
+                                    <div>
+                                        <h2 className="text-primarybege text-4xl font-black">
+                                            {name}
+                                        </h2>
+                                        <p className="text-primarybege font-medium">
+                                            @{userNick}
+                                        </p>
+                                    </div>
+
+                                    <Image
+                                        src={avatar_url}
+                                        alt={`Avatar do @${name}`}
+                                        width={120}
+                                        height={120}
+                                        className="rounded-full"
+                                    />
+                                </div>
+                            </div>
+
+                            <div className='flex justify-around items-center gap-3'>
+
+                                <div className='flex flex-col items-center'>
+                                    <p className='text-3xl text-primarybege font-bold'>Total de commits</p>
+                                    <p className='text-4xl text-secondarypurple font-black'>+{totalCommits}</p>
+                                </div>
+
+                                <div className='flex flex-col items-center justify-center border-x-2 border-t-2 rounded-t-2xl border-primarymediumblue w-xl h-50'>
+                                    <div className='flex items-center justify-between w-full px-12'>
+                                        <p className='text-primarybege text-2xl font-bold'>Valor agregado</p>
+                                        <Image 
+                                            src={githubLogo}
+                                            alt='Github Logo'
+                                            width={25}
+                                        />
+                                    </div>
+                                    <p className='text-8xl font-bold text-secondarygreen'>${valorAgregado}</p>
+                                </div>
+
+                                <div className='flex flex-col items-center'>
+                                    <p className='text-3xl text-primarybege font-bold'>Meus pontos</p>
+                                    <p className='text-4xl text-secondarygreen font-black'>+{pontosTotais}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+
+                <div className="flex flex-col text-primarybege max-w-xl gap-4">
+                    <h2 className="text-2xl sm:text-4xl font-inter font-bold">
+                        Compartilhe seu card em suas redes sociais!!
+                    </h2>
+                    <p className="text-primarylightblue max-sm:text-sm">
+                        Gere seu Card clicando no Botão abaixo! e mostre para o mundo quanto você já contribuiu com seus codigos.
+                    </p>
+
+                    <button onClick={handleDownload} className="w-fit text-xl font-bold bg-secondarygreen px-3 py-2 rounded-full pulse-scale shadow-2xl">
+                        Gerar agora
+                    </button>
+                </div>
+            </div>
+        </footer>
+    )
+}
+

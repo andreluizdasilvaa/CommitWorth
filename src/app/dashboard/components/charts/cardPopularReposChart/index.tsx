@@ -25,7 +25,7 @@ interface CardProps {
 
 export function CardPopularReposChart({ title, value }: CardProps) {
     return (
-        <div className="flex flex-col gap-5 w-full max-h-[350px] rounded-2xl bg-primaryblue p-5 pb-10">
+        <div className="flex flex-col gap-5 w-full max-h-[350px] shadow-2xl rounded-2xl bg-primaryblue p-5 pb-10">
             <div className="flex items-center justify-between">
                 <p className="text-xl text-primarybege font-inter font-bold">{title}</p>
             </div>

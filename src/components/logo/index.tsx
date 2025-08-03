@@ -4,9 +4,11 @@ import Image from "next/image";
 import Link from "next/link";
 import ImageGithub from '@/assets/github-logo.svg'
 
-export function Logo() {
+export function Logo({ isImg, className }: { isImg?:boolean, className?: string  }) {
+    let linkHref = isImg ? '#' : '/'
+
     return (
-        <Link href="/" className="flex items-center gap-2 cursor-cell">
+        <Link href={linkHref} className={`flex items-center gap-2 cursor-cell ${className}`}>
             <Image 
                 src={ImageGithub}
                 alt='Logo CommitWorth'
