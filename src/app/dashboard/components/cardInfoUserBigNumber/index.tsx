@@ -2,16 +2,17 @@
 import PointsIcon from '@/assets/Points_icon.svg'
 import { LucideIcon } from 'lucide-react'
 import Image from 'next/image';
-
+// Não me orgulho desse componente
 interface CardInfoUserSmallProps {
     title: string;
     Icon?: LucideIcon;
     value?: number;
     className?: string;
     isPoints?: boolean;
+    isFork?: boolean;
 }
 
-export function CardInfoUserBigNumber({ title, Icon, isPoints, value, className }: CardInfoUserSmallProps) {
+export function CardInfoUserBigNumber({ title, Icon, isPoints, value, isFork, className }: CardInfoUserSmallProps) {
     return (
         <div className={`flex flex-col gap-5 w-full min-h-64 rounded-2xl bg-primaryblue p-5 pb-10 ${className || ""}`}>
             <div className='flex items-center justify-between'>
@@ -26,10 +27,18 @@ export function CardInfoUserBigNumber({ title, Icon, isPoints, value, className 
                         alt='asd'
                     />
                 )}
-                
             </div>
 
-            <p className='text-center mt-7 text-7xl font-inter font-black text-primarybege'>{value}</p>
+            <div className='w-full h-full flex justify-center items-center'>
+                <p style={
+                    isFork ? { color: '#F0EBD8' } : { color: '#32E875' }
+                } className='text-center text-6xl lg:text-7xl font-inter font-black'>
+                    {!isPoints && !isFork && (
+                        <span>$</span>
+                    )}
+                    {value}
+                </p>
+            </div>
         </div>
     )
 }

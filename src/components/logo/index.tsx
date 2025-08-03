@@ -1,9 +1,12 @@
+"use client"
+
 import Image from "next/image";
+import Link from "next/link";
 import ImageGithub from '@/assets/github-logo.svg'
 
 export function Logo() {
     return (
-        <div className='flex items-center gap-2 cursor-cell'>
+        <Link href="/" className="flex items-center gap-2 cursor-cell">
             <Image 
                 src={ImageGithub}
                 alt='Logo CommitWorth'
@@ -11,6 +14,6 @@ export function Logo() {
                 height={30}
             />
             <p className='text-secondarypurple text-xl font-bold'>CommitWorth</p>
-        </div>
+        </Link>
     )
 }

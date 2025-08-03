@@ -4,7 +4,8 @@ import {
     Star,
     Box,
     GitCommit,
-    DollarSign 
+    DollarSign,
+    GitFork
 } from 'lucide-react'
 import { formatDistanceStrict } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
@@ -18,18 +19,39 @@ import { CardInfoUserSmall } from "../components/cardInfoUserSmall"
 import { RateLimitModal, RateLimitProps } from "../components/rateLimitModal"
 import { UserProps } from "@/types/user"
 import { getGitHubStatsGraphQL } from "@/lib/github"
+
 import { CardInfoUserBigNumber } from "../components/cardInfoUserBigNumber"
+import { CardLanguageChart } from "../components/charts/cardLanguageChart"
+import { CardPopularReposChart } from "../components/charts/cardPopularReposChart"
+import { WellStructuredRepoScoresChart } from "../components/charts/wellStructuredRepoScoresChart"
 
 interface UserStaticsProps {
     totalStars: number;
     totalForks: number;
     repoCountExcludingForks: number;
-    top4MostUsedLanguages: string[];
-    popularContributions: string[];
-    wellStructuredRepos: string[];
+    popularContributions: {
+        name: string;
+        stars: number;
+    }[];
+    wellStructuredRepoScores: {
+        name: string;
+        score: number;
+    }[];
+    wellStructuredRepos?: { // talves use isso para algo futuro
+        name: string
+        description: string | null
+        homepageUrl: string | null
+        stars: number
+        forks: number
+        mainLanguage?: string
+    }[];
     totalCommits: number;
     valorAgregado: number;
     pontosTotais: number;
+    languageRepoCount: {
+        language: string;
+        count: number;
+    }[]
 }
 
 type ParamsProps = { params: { user: string } }
@@ -63,7 +85,6 @@ export default async function UserDeitais({ params }: ParamsProps) {
         console.log(resp)
         userDataInfos = resp
         console.log(userDataInfos)
-        
 
     } catch (error) {
         console.log(error)
@@ -133,20 +154,43 @@ export default async function UserDeitais({ params }: ParamsProps) {
                 />
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 my-4  gap-8">
-                <CardInfoUserBigNumber 
+            <div className="grid grid-cols-1 lg:grid-cols-2 my-4 mt-8 gap-8">
+                <CardInfoUserBigNumber
                     Icon={DollarSign}
                     title="Valor agregado"
                     value={userDataInfos.valorAgregado}
                 />
 
-                <CardInfoUserBigNumber 
+                <CardLanguageChart
+                    title="Linguagens mais utilizadas"
+                    value={userDataInfos.languageRepoCount}
+                />
+
+                <CardInfoUserBigNumber
                     isPoints={true}
                     title="Seus Pontos"
                     value={userDataInfos.pontosTotais}
                 />
-            </div>
 
+                <CardPopularReposChart
+                    title="Repositórios populares"
+                    value={userDataInfos.popularContributions}
+                />
+
+                {userDataInfos.wellStructuredRepoScores.length > 1 && (
+                    <WellStructuredRepoScoresChart
+                        title="Repositórios bem estruturados"
+                        value={userDataInfos.wellStructuredRepoScores}
+                    />
+                )}
+
+                <CardInfoUserBigNumber
+                    Icon={GitFork}
+                    title="Total Forks"
+                    value={userDataInfos.totalForks}
+                    isFork={true}
+                />
+            </div>
         </Container>
     )
 }
