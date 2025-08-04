@@ -1,6 +1,5 @@
 import type { Metadata } from "next"
 import { Lalezar } from 'next/font/google'
-import { Header } from "@/components/header"
 
 const lalezar = Lalezar({
     subsets: ['latin'],

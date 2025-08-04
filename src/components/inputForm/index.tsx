@@ -18,7 +18,7 @@ export function InputForm() {
             return;
         }
         setLoading(true)
-        const response = await fetch('https://api.github.com/users/andreluizdasilvaa')
+        const response = await fetch(`https://api.github.com/users/${input}`)
         if(!response || response.status === 404) {
             toast.warning("Usuário não encontrado, envie um usenick valido")
             setLoading(false)

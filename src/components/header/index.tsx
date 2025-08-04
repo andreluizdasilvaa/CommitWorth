@@ -29,7 +29,7 @@ export function Header({ isDashboard }: { isDashboard?: boolean }) {
                                         </a>
                                     </li>
                                     <li>
-                                        <a className='hover:text-primarybege transition-all duration-75' target='_blank' href="https://github.com/andreluizdasilvaa">
+                                        <a className='hover:text-primarybege transition-all duration-75' target='_blank' href="https://github.com/andreluizdasilvaa/CommitWorth">
                                             Github
                                         </a>
                                     </li>
@@ -77,7 +77,7 @@ export function Header({ isDashboard }: { isDashboard?: boolean }) {
                                 </a>
                             </li>
                             <li>
-                                <a className='hover:text-primarybege transition-all duration-75' target='_blank' href="https://github.com/andreluizdasilvaa">
+                                <a className='hover:text-primarybege transition-all duration-75' target='_blank' href="https://github.com/andreluizdasilvaa/CommitWorth">
                                     Github
                                 </a>
                             </li>

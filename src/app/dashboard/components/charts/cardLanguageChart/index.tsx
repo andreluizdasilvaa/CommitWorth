@@ -6,7 +6,9 @@ import {
     ChartTooltip,
     ChartTooltipContent
 } from "@/components/ui/chart"
+
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts"
+
 import {
     Tooltip,
     TooltipContent,

@@ -1,14 +1,13 @@
-
 import PointsIcon from '@/assets/Points_icon.svg'
 import { LucideIcon } from 'lucide-react'
 import Image from 'next/image';
 import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
+    Tooltip,
+    TooltipContent,
+    TooltipTrigger
 } from "@/components/ui/tooltip"
 
-// Não me orgulho desse componente
+// Não me orgulho desse componente :)
 interface CardInfoUserSmallProps {
     title: string;
     Icon?: LucideIcon;
@@ -53,11 +52,11 @@ export function CardInfoUserBigNumber({ title, about, Icon, isPoints, value, isF
             <div className='w-full h-full flex justify-center items-center'>
                 <p style={
                     isFork ? { color: '#F0EBD8' } : { color: '#32E875' }
-                } className='text-center text-6xl lg:text-7xl font-inter font-black'>
+                } className='text-center text-6xl lg:text-7xl font-inter font-black truncate max-w-full px-2'>
                     {!isPoints && !isFork && (
-                        <span>$</span>
+                        <span>R$</span>
                     )}
-                    {value}
+                    {value && value.toLocaleString('pt-BR')}
                 </p>
             </div>
         </div>

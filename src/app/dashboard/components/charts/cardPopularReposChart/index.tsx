@@ -6,6 +6,7 @@ import {
     ChartTooltip,
     ChartTooltipContent
 } from "@/components/ui/chart"
+
 import { Bar, BarChart, XAxis } from "recharts"
 
 const chartConfig = {
@@ -37,7 +38,7 @@ export function CardPopularReposChart({ title, value }: CardProps) {
                         tickLine={false}
                         tickMargin={10}
                         axisLine={false}
-                        tickFormatter={(value) => value.slice(0, 12)}
+                        tickFormatter={(value) => value.slice(0, 11)}
                     />
                     <ChartTooltip content={<ChartTooltipContent />} />
                     <Bar dataKey="stars" fill="var(--color-stars)" radius={12} />

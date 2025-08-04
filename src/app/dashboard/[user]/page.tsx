@@ -1,110 +1,81 @@
 import Image from "next/image"
-import { api } from "@/lib/api"
 import {
     Star,
     Box,
     GitCommit,
     DollarSign,
-    GitFork
+    GitFork,
 } from 'lucide-react'
-import { formatDistanceStrict } from 'date-fns'
-import { ptBR } from 'date-fns/locale'
+import { redirect, notFound } from "next/navigation"
+import { cache } from 'react'
 
-import { isAxiosError } from "axios"
+import { getGitHubStatsGraphQL, GitHubCompleteData } from "@/lib/getGithubData"
+
 import { Footer } from "../components/footer"
-import { Container } from "@/components/container"
 import { ButtonGithub } from "../components/buttonGithub"
-import { Modal } from "../components/modal"
-import { redirect } from "next/navigation"
 import { CardInfoUserSmall } from "../components/cardInfoUserSmall"
-import { RateLimitModal, RateLimitProps } from "../components/rateLimitModal"
-import { UserProps } from "@/types/user"
-import { getGitHubStatsGraphQL } from "@/lib/github"
-
 import { CardInfoUserBigNumber } from "../components/cardInfoUserBigNumber"
 import { CardLanguageChart } from "../components/charts/cardLanguageChart"
 import { CardPopularReposChart } from "../components/charts/cardPopularReposChart"
 import { WellStructuredRepoScoresChart } from "../components/charts/wellStructuredRepoScoresChart"
+import { RateLimitModal } from "../components/rateLimitModal"
+
+import { Container } from "@/components/container"
 import LightRays from '@/components/LightRaysBG'
 import { Header } from "@/components/header"
+import { Metadata } from "next"
+import { GenerateMetadataModel } from "../utils/generateMetadata"
 
-interface UserStaticsProps {
-    totalStars: number;
-    totalForks: number;
-    repoCountExcludingForks: number;
-    popularContributions: {
-        name: string;
-        stars: number;
-    }[];
-    wellStructuredRepoScores: {
-        name: string;
-        score: number;
-    }[];
-    wellStructuredRepos?: { // talves use isso para algo futuro
-        name: string
-        description: string | null
-        homepageUrl: string | null
-        stars: number
-        forks: number
-        mainLanguage?: string
-    }[];
-    totalCommits: number;
-    valorAgregado: number;
-    pontosTotais: number;
-    languageRepoCount: {
-        language: string;
-        count: number;
-    }[]
-}
+// Função com cache para buscar TODOS os dados com UMA única requisição
+const getCompleteGitHubData = cache(async (user: string): Promise<GitHubCompleteData> => {
+    try {
+        const data = await getGitHubStatsGraphQL(user)
+        return data
+
+    } catch (error: any) {
+        if (error?.response?.errors) {
+            const errors = error.response.errors
+            // usuário não encontrado
+            if (errors.some((err: any) => err.type === 'NOT_FOUND')) {
+                notFound()
+            }
+        }
+
+        if (error?.response?.status === 403) {
+            redirect('/')
+        }
+        
+        throw error
+    }
+})
 
 type ParamsProps = { params: { user: string } }
-export default async function UserDeitais({ params }: ParamsProps) {  
+
+// Função para gerar metadata usando os dados em cache
+export async function generateMetadata({ params }: ParamsProps): Promise<Metadata> {
     const { user } = await params
 
-    let userData: UserProps
-    let rateLimitData: RateLimitProps
-    let userDataInfos: UserStaticsProps
+    const { userData, totalStars, totalCommits, valorAgregado } = await getCompleteGitHubData(user)
+    
+    return GenerateMetadataModel({ totalCommits, totalStars, userData, valorAgregado})
+}
 
-    try {
-        const response = await api.get(`/${user}`)
+export default async function UserDetails({ params }: ParamsProps) {  
+    const { user } = await params
 
-        const now = new Date()
-        const resetDate = new Date(Number(response.headers['x-ratelimit-reset']) * 1000)
-        const tempoRestante = formatDistanceStrict(resetDate, now, {
-            locale: ptBR,
-            addSuffix: true,
-            roundingMethod: 'floor'
-        })
-        const rateLimit = {
-            totalLimit: response.headers['x-ratelimit-limit'],
-            remainder: response.headers['x-ratelimit-remaining'],
-            reset: `Faltam ${tempoRestante} para resetar`
-        }
-
-        rateLimitData = rateLimit
-        userData = response.data
-
-        const resp = await getGitHubStatsGraphQL(user)
-        console.log(resp)
-        userDataInfos = resp
-        console.log(userDataInfos)
-
-    } catch (error) {
-        console.log(error)
-        if (isAxiosError(error)) {
-            if (error.response?.status === 404) {
-                console.log('Usuário não existe')
-                return <Modal />
-            }
-
-            if (error.response?.status === 403) {
-                console.log('Limite de requisições a api do github atingida, volte mais tarde')
-                redirect('/')
-            }
-        }
-        console.log('Erro interno/desconhecido')
-        redirect('/')
-    }
+    const {
+        userData,
+        totalStars,
+        totalForks,
+        repoCountExcludingForks,
+        popularContributions,
+        wellStructuredRepoScores,
+        totalCommits,
+        valorAgregado,
+        pontosTotais,
+        languageRepoCount,
+        rateLimitInfo
+    } = await getCompleteGitHubData(user) // esses dados ele pega do cache da req já feita para os metadata
 
     return (
         <div className="w-screen h-screen overflow-x-hidden fixed">
@@ -123,14 +94,13 @@ export default async function UserDeitais({ params }: ParamsProps) {
                 />
             </div>
 
-
             <div className="relative z-10">
                 <Header isDashboard={true} />
                 <Container>
-                    <RateLimitModal
-                        remainder={rateLimitData.remainder}
-                        reset={rateLimitData.reset}
-                        totalLimit={rateLimitData.totalLimit}
+                    <RateLimitModal 
+                        remainder={rateLimitInfo.remaining}
+                        reset={rateLimitInfo.resetAtRelative}
+                        totalLimit={rateLimitInfo.limit}
                     />
 
                     <section>
@@ -162,17 +132,17 @@ export default async function UserDeitais({ params }: ParamsProps) {
                             <CardInfoUserSmall
                                 Icon={Star}
                                 title="Total de estrelas"
-                                value={userDataInfos.totalStars}
+                                value={totalStars}
                             />
                             <CardInfoUserSmall
                                 Icon={Box}
                                 title="Total de Repositorios"
-                                value={userDataInfos.repoCountExcludingForks}
+                                value={repoCountExcludingForks}
                             />
                             <CardInfoUserSmall
                                 Icon={GitCommit}
                                 title="Total de Commits"
-                                value={userDataInfos.totalCommits}
+                                value={totalCommits}
                             />
                         </div>
 
@@ -180,35 +150,35 @@ export default async function UserDeitais({ params }: ParamsProps) {
                             <CardInfoUserBigNumber
                                 Icon={DollarSign}
                                 title="Valor agregado"
-                                value={userDataInfos.valorAgregado}
+                                value={valorAgregado}
                                 about="Valor fictício estimado com base na sua atividade pública no GitHub, considerando estrelas, forks e commits."
                             />
 
-                            {userDataInfos.languageRepoCount.length > 1 && (
+                            {languageRepoCount.length > 1 && (
                                 <CardLanguageChart
                                     title="Linguagens mais utilizadas"
-                                    value={userDataInfos.languageRepoCount}
+                                    value={languageRepoCount}
                                 />
                             )}
 
                             <CardInfoUserBigNumber
                                 isPoints={true}
                                 title="Seus Pontos"
-                                value={userDataInfos.pontosTotais}
+                                value={pontosTotais}
                                 about="Pontos calculados com base em seus commits, estrelas, forks e bônus por repositórios bem estruturados."
                             />
 
-                            {userDataInfos.popularContributions.length > 1 && (
+                            {popularContributions.length > 1 && (
                                 <CardPopularReposChart
                                     title="Repositórios populares"
-                                    value={userDataInfos.popularContributions}
+                                    value={popularContributions}
                                 />
                             )}
 
-                            {userDataInfos.wellStructuredRepoScores.length > 1 && (
+                            {wellStructuredRepoScores.length > 1 && (
                                 <WellStructuredRepoScoresChart
                                     title="Repositórios bem estruturados"
-                                    value={userDataInfos.wellStructuredRepoScores}
+                                    value={wellStructuredRepoScores}
                                     about="Repositórios com descrição, página inicial e issues habilitadas, ranqueados por popularidade."
                                 />
                             )}
@@ -216,21 +186,20 @@ export default async function UserDeitais({ params }: ParamsProps) {
                             <CardInfoUserBigNumber
                                 Icon={GitFork}
                                 title="Total Forks"
-                                value={userDataInfos.totalForks}
+                                value={totalForks}
                                 isFork={true}
                             />
                         </div>
                     </section>
                         
                     <h2 className="text-primarybege text-4xl font-bold mb-2 mt-12">Gere seu card!</h2>
-                    <Footer 
+                    <Footer
                         avatar_url={userData.avatar_url}
                         name={userData.name}
-                        userNick={userData.login}
-                        pontosTotais={userDataInfos.pontosTotais}
-                        totalCommits={userDataInfos.totalCommits}
-                        valorAgregado={userDataInfos.valorAgregado}
-                        
+                        nickname={userData.login}
+                        pontosTotais={pontosTotais}
+                        totalCommits={totalCommits}
+                        valorAgregado={valorAgregado}
                     />
                 </Container>
             </div>

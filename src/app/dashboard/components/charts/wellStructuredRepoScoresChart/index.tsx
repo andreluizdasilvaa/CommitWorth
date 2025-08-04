@@ -6,7 +6,9 @@ import {
     ChartTooltip,
     ChartTooltipContent
 } from "@/components/ui/chart"
+
 import { Bar, BarChart, XAxis } from "recharts"
+
 import {
     Tooltip,
     TooltipContent,
@@ -57,7 +59,7 @@ export function WellStructuredRepoScoresChart({ title, value, about }: CardProps
                         tickLine={false}
                         tickMargin={10}
                         axisLine={false}
-                        tickFormatter={(value) => value.slice(0, 12)}
+                        tickFormatter={(value) => value.slice(0, 11)}
                     />
                     <ChartTooltip content={<ChartTooltipContent />} />
                     <Bar dataKey="score" fill="var(--color-score)" radius={12} />

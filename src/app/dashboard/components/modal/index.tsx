@@ -3,19 +3,28 @@
 import React, { FormEvent } from "react"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
+import { Loader } from "lucide-react"
 
 export function Modal() {
     const [userNick, setUserNick] = React.useState('')
+    const [loading, setLoading] = React.useState(false)
     const router = useRouter()
 
-    function handleRedirect(e: FormEvent) {
+    async function handleRedirect(e: React.FormEvent) {
         e.preventDefault()
 
-        if(!userNick) {
-            toast.warning("Informe seu nickname")
+        if(!userNick.trim()) {
+            toast.warning("Preencha o campo com seu @nickname do github")
             return;
         }
-
+        setLoading(true)
+        const response = await fetch(`https://api.github.com/users/${userNick}`)
+        if(!response || response.status === 404) {
+            toast.warning("Usuário não encontrado, envie um usenick valido")
+            setLoading(false)
+            return;
+        }
+        
         router.replace(`/dashboard/${userNick}`)
     }
 
@@ -23,8 +32,8 @@ export function Modal() {
         <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm">
 
             <div className="flex flex-col gap-1 w-fit max-w-xl mx-3  p-6 bg-white/10 shadow-2xl backdrop-blur-2xl rounded-2xl">
-                <h1 className="text-primarybege font-lalezar text-5xl">Você não informou seu nickname do github ou algo deu errado</h1>
-                <p className="text-primarylightblue">Você deve ter enviado seu nome incorreto ou vazio, para conseguimos calcular quanto você gerou de valor com seus commits no github precisamos do seu nickname, digite ele no campo abaixo</p>
+                <h1 className="text-primarybege font-lalezar text-5xl">Você informou seu nickname do github errado ou vazio</h1>
+                <p className="text-primarylightblue">Precisamos do seu nickname do github, para conseguimos calcular quanto você gerou de valor com seus commits no github, digite ele no campo abaixo 👇</p>
 
                 <form
                     className="flex justify-between bg-white/20 w-full mt-6"
@@ -39,10 +48,15 @@ export function Modal() {
                     />
 
                     <button
-                        className="bg-white/30 text-primarybege py-2 w-40 font-medium active:scale-102"
+                        className="flex items-center justify-center bg-white/30 text-primarybege py-2 w-40 font-medium active:scale-102"
                         type="submit"
+                        disabled={loading}
                     >
-                        Saber agora
+                        {loading ? (
+                            <Loader size={24} color="#fff" className="animate-spin" />
+                        ) : (
+                            'Saber agora'
+                        )}
                     </button>
                 </form>
             </div>

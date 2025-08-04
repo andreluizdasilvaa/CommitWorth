@@ -16,7 +16,7 @@ export function CardInfoUserSmall({ title, Icon, value, className }: CardInfoUse
                 <Icon size={30} color='#613DC1' />
             </div>
 
-            <p className='text-center text-6xl font-inter font-black text-primarybege'>{value}</p>
+            <p className='text-center truncate text-6xl font-inter font-black text-primarybege'>{value}</p>
         </div>
     )
 }
