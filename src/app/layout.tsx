@@ -16,6 +16,7 @@ const inter = Inter({
 })
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_HOST_URL as string),
   title: "CommitWorth",
   description: "Veja Quanto Você Agregou de valor com Seus Commits no GitHub!",
   icons: {
