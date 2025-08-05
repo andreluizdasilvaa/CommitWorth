@@ -49,7 +49,6 @@ const getCompleteGitHubData = cache(async (user: string): Promise<GitHubComplete
     }
 })
 
-// Tipos corrigidos para Next.js 15
 interface PageProps {
     params: Promise<{ user: string }>
 }
@@ -58,9 +57,25 @@ interface PageProps {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
     const { user } = await params
 
-    const { userData, totalStars, totalCommits, valorAgregado } = await getCompleteGitHubData(user)
+    const { 
+        userData, 
+        totalStars, 
+        totalCommits, 
+        valorAgregado, 
+        achievements,
+        pontosTotais,
+        repoCountExcludingForks
+} = await getCompleteGitHubData(user)
     
-    return GenerateMetadataModel({ totalCommits, totalStars, userData, valorAgregado })
+    return GenerateMetadataModel({ 
+        totalCommits, 
+        totalStars, 
+        userData, 
+        valorAgregado,
+        achievements,
+        totalPoints: pontosTotais,
+        totalRepos: repoCountExcludingForks
+    })
 }
 
 export default async function UserDetails({ params }: PageProps) {  
