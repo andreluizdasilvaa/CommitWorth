@@ -32,7 +32,7 @@ export function CardInfoUserBigNumber({ title, about, Icon, isPoints, value, isF
                                 </div>
                             </TooltipTrigger>
                             <TooltipContent>
-                                <p>{about}</p>
+                                <p className="max-w-50 text-center">{about}</p>
                             </TooltipContent>
                         </Tooltip>
                     )}

@@ -15,7 +15,7 @@ export function ModalShareCard({ setShowModal, nickname }: {
             <div className="absolute inset-0 bg-black/50" onClick={() => setShowModal(false)}></div>
 
             <div className="relative mx-4 bg-primaryblue w-full max-w-xl rounded-xl shadow-lg p-6 z-50">
-                <h1 className="text-primarybege text-center font-inter text-4xl font-bold">Compatilher seu card no <span className="bg-gradient-to-r from-secondarypurple to-secondarygreen bg-clip-text text-transparent">Linkedin!</span></h1>
+                <h1 className="text-primarybege text-center font-inter text-4xl font-bold">Compatilhe seu card no <span className="bg-gradient-to-r from-secondarypurple to-secondarygreen bg-clip-text text-transparent font-bold">Linkedin!</span></h1>
                 <p className='text-center text-primarylightblue mt-2'>Mostre as pessoas o quanto você já agregou com suas contribuições</p>
 
                 <a 

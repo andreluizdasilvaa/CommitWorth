@@ -10,7 +10,7 @@ interface MetadataProps {
 
 export function GenerateMetadataModel({ totalCommits, totalStars, userData, valorAgregado }:MetadataProps): Metadata {
     try {
-        let title = `${userData.name || userData.login} | Dashboard GitHub - CommitWorth`
+        let title = `${userData.name || userData.login} | CommitWorth Dashboard`
         let description = `Dashboard completo do GitHub de ${userData.name || userData.login}: ${totalStars} ⭐ estrelas, ${totalCommits} commits, R$ ${valorAgregado.toLocaleString('pt-BR')} em valor agregado. Gere seu card personalizado!`
         
         return {
@@ -41,13 +41,13 @@ export function GenerateMetadataModel({ totalCommits, totalStars, userData, valo
                 title: `🚀 ${userData.name || userData.login} no CommitWorth`,
                 description: `💰 R$ ${valorAgregado.toLocaleString('pt-BR')} em valor | ⭐ ${totalStars} estrelas | 💻 ${totalCommits} commits | Crie seu card GitHub personalizado agora!`,
                 url: `${process.env.NEXT_PUBLIC_HOST_URL}/dashboard/${userData.login}`,
-                siteName: 'CommitWorth - Dashboard GitHub',
+                siteName: 'CommitWorth - Dashboard',
                 images: [
                     {
                         url: userData.avatar_url,
                         width: 400,
                         height: 400,
-                        alt: `${userData.name || userData.login} - Dashboard GitHub CommitWorth`,
+                        alt: `${userData.name || userData.login} - Dashboard CommitWorth`,
                     },
                 ],
                 locale: 'pt_BR',
@@ -57,7 +57,7 @@ export function GenerateMetadataModel({ totalCommits, totalStars, userData, valo
             twitter: {
                 card: 'summary_large_image',
                 title: `${userData.name || userData.login} | CommitWorth 🚀`,
-                description: `Dashboard GitHub completo: R$ ${valorAgregado.toLocaleString('pt-BR')} em valor agregado, ${totalStars} ⭐ e ${totalCommits} commits! Crie seu card personalizado 👇`,
+                description: `Dashboard completo: R$ ${valorAgregado.toLocaleString('pt-BR')} em valor agregado, ${totalStars} ⭐ e ${totalCommits} commits! Crie seu card personalizado 👇`,
                 creator: '@AndreVsemR',
                 images: [userData.avatar_url],
             },

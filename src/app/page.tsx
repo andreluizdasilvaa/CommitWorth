@@ -57,13 +57,13 @@ export default function Home() {
 
                             <CardInfo
                                 icon={Gamepad}
-                                description="Seu valor é calculado com base na qualidade dos commits, PRs aceitos e engajamento na comunidade. Quanto mais você contribui de forma relevante, maior será seu reconhecimento."
-                                title="Estatísticas e Ranking"
+                                description="Seu valor é calculado com base nos seus commits, estrelas, forks e um bonus em repositórios bem documentados. Quanto mais você contribui de forma relevante, maior será seu reconhecimento."
+                                title="Valores e Estatísticas"
                             />
 
                             <CardInfo
                                 icon={SmilePlus}
-                                description="Geramos um card exclusivo com seu valor acumulado, pronto para compartilhar no LinkedIn, Twitter e outras redes sociais. Destaque sua dedicação ao open-source!"
+                                description="Geramos um card exclusivo com seu valor acumulado, pronto para compartilhar no LinkedIn, Twitter e outras redes sociais."
                                 title="Compartilhe seu Impacto"
                             />
                         </div>

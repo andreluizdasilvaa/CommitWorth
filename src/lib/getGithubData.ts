@@ -1,4 +1,5 @@
 import { GraphQLClient, gql } from "graphql-request"
+import { Achievement, calculateAchievements } from "./calculateAchievements"
 
 const graphqlClient = new GraphQLClient("https://api.github.com/graphql", {
     headers: {
@@ -12,7 +13,7 @@ interface RateLimitInfo {
     resetAtRelative: string
 }
 
-interface GitHubStatsResponse {
+export interface GitHubStatsResponse {
     rateLimit: {
         limit: number
         remaining: number
@@ -23,6 +24,7 @@ interface GitHubStatsResponse {
         login: string
         name: string
         avatarUrl: string
+        createdAt: string 
         repositories: {
             nodes: {
                 name: string
@@ -32,6 +34,7 @@ interface GitHubStatsResponse {
                 description: string | null
                 homepageUrl: string | null
                 hasIssuesEnabled: boolean
+                createdAt: string 
                 languages: {
                     nodes: {
                         name: string
@@ -44,6 +47,32 @@ interface GitHubStatsResponse {
                         }
                     }
                 } | null
+                mentionableUsers: {
+                    totalCount: number
+                }
+            }[]
+        }
+        contributionsCollection: {  
+            contributionCalendar: {
+                totalContributions: number
+                weeks: {
+                    contributionDays: {
+                        contributionCount: number
+                        date: string
+                    }[]
+                }[]
+            }
+            commitContributionsByRepository: {
+                repository: {
+                    name: string
+                }
+                contributions: {
+                    totalCount: number
+                    nodes: {
+                        occurredAt: string
+                        commitCount: number
+                    }[]
+                }
             }[]
         }
     }
@@ -57,6 +86,7 @@ interface Repository {
     description: string | null
     homepageUrl: string | null
     hasIssuesEnabled: boolean
+    createdAt: string 
     languages: {
         nodes: {
             name: string
@@ -69,6 +99,9 @@ interface Repository {
             }
         }
     } | null
+    mentionableUsers: {  
+        totalCount: number
+    }
 }
 
 interface WellStructuredRepo {
@@ -112,9 +145,9 @@ export interface GitHubCompleteData {
         count: number
     }[]
     rateLimitInfo: RateLimitInfo
+    achievements: Achievement[]
 }
 
-// Constantes para cálculos
 const SCORING_CONFIG = {
     valorPorCommit: 0.02,
     valorPorStar: 0.50,
@@ -123,13 +156,12 @@ const SCORING_CONFIG = {
     pontosPorStar: 5,
     pontosPorFork: 3,
     bonusRepoBemEstruturado: 10,
-}
+} as const
 
 function formatRateLimitInfo(rateLimit: GitHubStatsResponse['rateLimit']): RateLimitInfo {
     const resetDate = new Date(rateLimit.resetAt)
     const now = new Date()
     
-    // Calcular quantos segundos faltam para o reset
     const secondsUntilReset = Math.max(0, Math.floor((resetDate.getTime() - now.getTime()) / 1000))
     
     return {
@@ -154,6 +186,7 @@ async function fetchGitHubData(username: string): Promise<GitHubStatsResponse> {
                 login
                 name
                 avatarUrl
+                createdAt
                 repositories(first: 100, ownerAffiliations: OWNER) {
                     nodes {
                         name
@@ -163,7 +196,8 @@ async function fetchGitHubData(username: string): Promise<GitHubStatsResponse> {
                         description
                         homepageUrl
                         hasIssuesEnabled
-                        languages(first: 1) {
+                        createdAt
+                        languages(first: 10) {
                             nodes {
                                 name
                             }
@@ -177,31 +211,72 @@ async function fetchGitHubData(username: string): Promise<GitHubStatsResponse> {
                                 }
                             }
                         }
+                        mentionableUsers(first: 10) {
+                            totalCount
+                        }
+                    }
+                }
+                contributionsCollection {
+                    contributionCalendar {
+                        totalContributions
+                        weeks {
+                            contributionDays {
+                                contributionCount
+                                date
+                            }
+                        }
+                    }
+                    commitContributionsByRepository {
+                        repository {
+                            name
+                        }
+                        contributions(first: 100) {
+                            totalCount
+                            nodes {
+                                occurredAt
+                                commitCount
+                            }
+                        }
                     }
                 }
             }
         }
     `
 
-    return await graphqlClient.request<GitHubStatsResponse>(query, {
-        login: username,
-    })
+    try {
+        return await graphqlClient.request<GitHubStatsResponse>(query, { login: username })
+    } catch (error) {
+        console.error(`Erro ao buscar dados do GitHub para ${username}:`, error)
+        throw error
+    }
 }
 
 function filterNonForkRepos(repos: Repository[]): Repository[] {
-    return repos.filter(r => !r.isFork)
+    return repos.filter(repo => !repo.isFork)
 }
 
-function calculateTotalStats(repos: Repository[]) {
-    let totalCommits = 0
-    let totalStars = 0
-    let totalForks = 0
+// calcula commits de forma mais precisa
+function calculateUnifiedCommitCount(data: GitHubStatsResponse, nonForkRepos: Repository[]): number {
+    // Soma dos commits dos repositórios individuais
+    const repoCommits = nonForkRepos.reduce((total, repo) => {
+        return total + (repo.defaultBranchRef?.target?.history?.totalCount ?? 0)
+    }, 0)
+    
+    // Soma dos commits por repositório das contribuições
+    const commitsByRepo = data.user.contributionsCollection?.commitContributionsByRepository?.reduce((total, repoContrib) => {
+        return total + (repoContrib.contributions?.totalCount ?? 0)
+    }, 0) ?? 0
+    
+    // Total de contribuições do último ano
+    const contributionCommits = data.user.contributionsCollection?.contributionCalendar?.totalContributions ?? 0
+    
+    return Math.max(repoCommits, commitsByRepo, contributionCommits)
+}
 
-    for (const repo of repos) {
-        totalStars += repo.stargazerCount || 0
-        totalForks += repo.forkCount || 0
-        totalCommits += repo.defaultBranchRef?.target?.history?.totalCount || 0
-    }
+function calculateTotalStats(data: GitHubStatsResponse, repos: Repository[]) {
+    const totalStars = repos.reduce((total, repo) => total + (repo.stargazerCount ?? 0), 0)
+    const totalForks = repos.reduce((total, repo) => total + (repo.forkCount ?? 0), 0)
+    const totalCommits = calculateUnifiedCommitCount(data, repos)
 
     return { totalCommits, totalStars, totalForks }
 }
@@ -209,21 +284,21 @@ function calculateTotalStats(repos: Repository[]) {
 function calculateLanguageStats(repos: Repository[]) {
     const languageCount = new Map<string, number>()
 
-    for (const repo of repos) {
+    repos.forEach(repo => {
         const mainLanguage = repo.languages?.nodes?.[0]?.name
         if (mainLanguage) {
-            languageCount.set(mainLanguage, (languageCount.get(mainLanguage) || 0) + 1)
+            languageCount.set(mainLanguage, (languageCount.get(mainLanguage) ?? 0) + 1)
         }
-    }
+    })
 
-    return [...languageCount.entries()]
-        .sort((a, b) => b[1] - a[1])
+    return Array.from(languageCount.entries())
+        .sort(([, a], [, b]) => b - a)
         .map(([language, count]) => ({ language, count }))
 }
 
 function getPopularContributions(repos: Repository[]) {
     return repos
-        .map(repo => ({ name: repo.name, stars: repo.stargazerCount }))
+        .map(repo => ({ name: repo.name, stars: repo.stargazerCount ?? 0 }))
         .sort((a, b) => b.stars - a.stars)
         .slice(0, 5)
 }
@@ -235,8 +310,8 @@ function identifyWellStructuredRepos(repos: Repository[]): WellStructuredRepo[] 
             name: repo.name,
             description: repo.description,
             homepageUrl: repo.homepageUrl,
-            stars: repo.stargazerCount,
-            forks: repo.forkCount,
+            stars: repo.stargazerCount ?? 0,
+            forks: repo.forkCount ?? 0,
             mainLanguage: repo.languages?.nodes?.[0]?.name,
         }))
 }
@@ -249,7 +324,7 @@ function calculateValorAgregado(totalCommits: number, totalStars: number, totalF
         totalStars * valorPorStar +
         totalForks * valorPorFork
 
-    return Number(valorAgregado.toFixed(2))
+    return Math.round(valorAgregado * 100) / 100 
 }
 
 function calculatePontosTotais(
@@ -283,13 +358,10 @@ function calculateWellStructuredRepoScores(wellStructuredRepos: WellStructuredRe
 }
 
 export async function getGitHubStatsGraphQL(username: string): Promise<GitHubCompleteData> {
-    // Buscar dados do GitHub (agora inclui rate limit)
     const data = await fetchGitHubData(username)
     
-    // Processar informações de rate limit
     const rateLimitInfo = formatRateLimitInfo(data.rateLimit)
     
-    // Extrair dados do usuário
     const userData: UserProps = {
         login: data.user.login,
         name: data.user.name,
@@ -300,8 +372,8 @@ export async function getGitHubStatsGraphQL(username: string): Promise<GitHubCom
     const repos = data.user.repositories.nodes
     const nonForkRepos = filterNonForkRepos(repos)
     
-    // Calcular estatísticas totais
-    const { totalCommits, totalStars, totalForks } = calculateTotalStats(nonForkRepos)
+    // Calcular estatísticas totais usando função unificada
+    const { totalCommits, totalStars, totalForks } = calculateTotalStats(data, nonForkRepos)
     
     // Calcular estatísticas de linguagens
     const languageRepoCount = calculateLanguageStats(nonForkRepos)
@@ -326,10 +398,15 @@ export async function getGitHubStatsGraphQL(username: string): Promise<GitHubCom
     // Calcular scores dos repositórios bem estruturados
     const wellStructuredRepoScores = calculateWellStructuredRepoScores(wellStructuredRepos)
 
+    // Calcular conquistas passando dados pré-calculados para consistência
+    const achievements = calculateAchievements(data, {
+        totalCommits,
+        totalStars,
+        nonForkRepos
+    })
+
     return {
-        // Dados do usuário
         userData,
-        // Estatísticas dos repositórios  
         totalStars,
         totalForks,
         repoCountExcludingForks: nonForkRepos.length,
@@ -340,5 +417,6 @@ export async function getGitHubStatsGraphQL(username: string): Promise<GitHubCom
         pontosTotais,
         languageRepoCount,
         rateLimitInfo,
+        achievements
     }
 }

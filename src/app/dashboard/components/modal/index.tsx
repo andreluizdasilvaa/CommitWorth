@@ -33,7 +33,7 @@ export function Modal() {
 
             <div className="flex flex-col gap-1 w-fit max-w-xl mx-3  p-6 bg-white/10 shadow-2xl backdrop-blur-2xl rounded-2xl">
                 <h1 className="text-primarybege font-lalezar text-5xl">Você informou seu nickname do github errado ou vazio</h1>
-                <p className="text-primarylightblue">Precisamos do seu nickname do github, para conseguimos calcular quanto você gerou de valor com seus commits no github, digite ele no campo abaixo 👇</p>
+                <p className="text-primarylightblue">Precisamos do seu nickname de <strong>usuário</strong> do github, para conseguimos calcular quanto você gerou de valor, digite ele no campo abaixo 👇</p>
 
                 <form
                     className="flex justify-between bg-white/20 w-full mt-6"

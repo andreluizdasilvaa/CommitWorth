@@ -7,6 +7,7 @@ import { ModalShareCard } from "../modalShareCard";
 import { toast } from "sonner";
 import Image from "next/image";
 import githubLogo from '@/assets/github-logo.svg'
+import { Achievement } from "@/lib/calculateAchievements";
 
 interface CardFooter {
     valorAgregado: number;
@@ -15,6 +16,7 @@ interface CardFooter {
     name: string;
     nickname: string;
     avatar_url: string;
+    achievements: Achievement[]
 }
 
 export function Footer({
@@ -23,7 +25,8 @@ export function Footer({
     pontosTotais,
     totalCommits,
     nickname,
-    valorAgregado
+    valorAgregado,
+    achievements
 }: CardFooter) {
     const [showModal, setShowModal] = useState(false)
     const cardRef = useRef<HTMLDivElement>(null)
@@ -41,7 +44,6 @@ export function Footer({
             setShowModal(true)
         } catch (err) {
             toast.error('Erro ao gerar imagem, tente novamente mais tarde')
-            console.error("Erro ao gerar imagem:", err)
         }
     }
 
@@ -66,18 +68,18 @@ export function Footer({
                             </div>
 
                             <div className='w-full rounded-t-2xl bg-primaryblue px-6 pt-6'>
-                                <div className='flex justify-between'>
+                                <div className='flex items-start justify-between'>
 
-                                    {/* <div className='flex flex-wrap gap-3 items-start w-full max-w-xl'>
+                                    <div className='flex flex-wrap gap-3 w-full max-w-xl'>
 
-                                        <div className="flex items-center justify-center gap-2 w-fit px-2.5 py-1 rounded-full border-1 border-secondarygreen shadow-[0_0_8px_2px_rgba(126,197,67,0.5)]">
-                                            <div className='w-3 h-3 rounded-full bg-secondarygreen' />
-                                            <span className="text-secondarygreen text-shadow-lg font-medium">Commitador consistente</span>
-                                        </div>
-
-                                    </div> */}
-
-                                    <div />
+                                        {achievements.filter(item => item.completed === true).map(item => (
+                                            <div key={item.id} className="flex items-center justify-center gap-2 w-fit h-fit px-2.5 py-1 rounded-full border-1 border-secondarygreen shadow-[0_0_8px_2px_rgba(126,197,67,0.5)]">
+                                                <div className='w-3 h-3 rounded-full bg-secondarygreen' />
+                                                <span className="text-secondarygreen text-shadow-lg font-medium">{item.name}</span>
+                                            </div>
+                                        ))}
+                                        
+                                    </div>
 
                                     <div className="flex gap-4 items-center justify-end">
                                         <div>
@@ -106,7 +108,7 @@ export function Footer({
                                         <p className='text-4xl text-secondarypurple font-black'>+{totalCommits}</p>
                                     </div>
 
-                                    <div className='flex flex-col items-center justify-center border-x-2 border-t-2 rounded-t-2xl border-primarymediumblue w-xl h-50'>
+                                    <div className='flex flex-col items-center py-8 justify-between border-x-2 border-t-2 rounded-t-2xl border-primarymediumblue w-xl h-50'>
                                         <div className='flex items-center justify-between w-full px-12'>
                                             <p className='text-primarybege text-2xl font-bold'>Valor agregado</p>
                                             <Image

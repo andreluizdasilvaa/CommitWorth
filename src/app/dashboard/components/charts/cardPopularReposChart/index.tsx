@@ -11,7 +11,7 @@ import { Bar, BarChart, XAxis } from "recharts"
 
 const chartConfig = {
     stars: {
-        label: "name",
+        label: "stars",
         color: "#E3B341",
     },
 } satisfies ChartConfig

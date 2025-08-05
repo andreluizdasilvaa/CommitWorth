@@ -1,36 +1,112 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# CommitWorth
 
-## Getting Started
+## Sumário
 
-First, run the development server:
+1. [Descrição Geral](#descrição-geral)
+2. [Funcionamento](#funcionamento)
+3. [Métricas do Dashboard](#métricas-do-dashboard)
+4. [Distintivos de Conquista](#distintivos-de-conquista)
+5. [Geração de Card Personalizado](#geração-de-card-personalizado)
+6. [Contribuição](#contribuição)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+---
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🟢 Descrição Geral
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+O **CommitWorth** é uma plataforma gamificada que calcula o "valor agregado" do trabalho de desenvolvedores utilizando dados públicos do GitHub. Basta informar um username válido para acessar um dashboard exclusivo com diversas métricas e conquistas.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **Entrada:** Username do GitHub.
+- **Redirecionamento:**
+  - Username válido: `/dashboard/<usernick>`
+  - Username inválido/inexistente: Página `not-found` com formulário para correção.
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## ⚙️ Funcionamento
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1. O usuário informa seu username do GitHub.
+2. O sistema coleta dados públicos via API do GitHub.
+3. As métricas são processadas e exibidas no dashboard.
+4. Caso o username não exista, o usuário pode corrigir e tentar novamente.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## 🧠 Métricas do Dashboard
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+O dashboard apresenta as seguintes métricas:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **Total de Estrelas:** Soma das estrelas em todos os repositórios públicos.
+- **Total de Repositórios:** Quantidade de repositórios públicos.
+- **Total de Commits:** Total de commits somados de todos os repositórios.
+- **Valor Agregado:** Valor fictício calculado com base na atividade no GitHub.
+
+### Tabela de Valores
+
+| Tipo    | Valor   |
+|--------|---------|
+| Commit | R$0,02  |
+| Estrela| R$0,50  |
+| Fork   | R$0,30  |
+
+- **Linguagens mais utilizadas:** Linguagens predominantes nos repositórios.
+- **Pontos do usuário:** Calculados conforme critérios abaixo:
+
+| Tipo                      | Pontos |
+|---------------------------|--------|
+| Commit                    | 1      |
+| Estrela                   | 5      |
+| Fork                      | 3      |
+| Repositório bem estruturado| 10     |
+
+- **Repositórios bem estruturados:** Repositórios que possuem descrição, página inicial e issues habilitadas.
+- **Total de Forks:** Soma dos forks dos repositórios públicos.
+
+---
+
+## 🏅 Distintivos de Conquista
+
+Os distintivos são desbloqueados conforme critérios específicos:
+
+- **Code Warrior:** Mais de 1.000 commits.
+- **Império do Código:** Mais de 50 repositórios.
+- **Arquiteto do GitHub:** 10 ou mais linguagens diferentes utilizadas.
+- **Estrela do GitHub:** Mais de 100 estrelas.
+- **Projeto de Ouro:** Possuir ao menos 1 repositório com mais de 500 estrelas.
+- **Veterano do Código:** Conta com mais de 10 anos de GitHub.
+- **GitHub Old School:** Conta com mais de 5 anos de existência.
+
+---
+
+## 🖼️ Geração de Card Personalizado
+
+Na parte inferior do dashboard, há um botão para gerar uma imagem personalizada contendo:
+
+- Nome do usuário
+- Username
+- Foto do GitHub
+- Valor agregado
+- Total de commits
+- Total de pontos
+- Distintivos conquistados
+
+**Funcionalidades:**
+- Download automático da imagem.
+- Compartilhamento direto no LinkedIn via modal com botão.
+
+---
+
+## 🤝 Contribuição
+
+Qualquer desenvolvedor pode contribuir com o projeto. Para isso:
+
+1. Faça um fork do repositório.
+2. Crie uma branch para sua feature ou correção.
+3. Envie um pull request detalhando sua proposta.
+
+**Sugestões de melhoria, correções e novas métricas são bem-vindas!**
+
+---
+
+## 📄 Licença
+
+Este projeto está sob a licença MIT. Consulte o arquivo [LICENSE](LICENSE) para mais detalhes.

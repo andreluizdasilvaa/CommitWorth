@@ -17,7 +17,7 @@ import {
 
 const chartConfig = {
     score: {
-        label: "name",
+        label: "+pontos",
         color: "#748CAB",
     },
 } satisfies ChartConfig
@@ -45,7 +45,7 @@ export function WellStructuredRepoScoresChart({ title, value, about }: CardProps
                                 </div>
                             </TooltipTrigger>
                             <TooltipContent>
-                                <p>{about}</p>
+                                <p className="max-w-50 text-center">{about}</p>
                             </TooltipContent>
                         </Tooltip>
                     )}

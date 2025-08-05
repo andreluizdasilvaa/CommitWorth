@@ -12,13 +12,13 @@ import { cache } from 'react'
 import { getGitHubStatsGraphQL, GitHubCompleteData } from "@/lib/getGithubData"
 
 import { Footer } from "../components/footer"
-import { ButtonGithub } from "../components/buttonGithub"
 import { CardInfoUserSmall } from "../components/cardInfoUserSmall"
 import { CardInfoUserBigNumber } from "../components/cardInfoUserBigNumber"
 import { CardLanguageChart } from "../components/charts/cardLanguageChart"
 import { CardPopularReposChart } from "../components/charts/cardPopularReposChart"
 import { WellStructuredRepoScoresChart } from "../components/charts/wellStructuredRepoScoresChart"
 import { RateLimitModal } from "../components/rateLimitModal"
+import { ConquestModal } from "../components/conquestCard"
 
 import { Container } from "@/components/container"
 import LightRays from '@/components/LightRaysBG'
@@ -49,18 +49,21 @@ const getCompleteGitHubData = cache(async (user: string): Promise<GitHubComplete
     }
 })
 
-type ParamsProps = { params: { user: string } }
+// Tipos corrigidos para Next.js 15
+interface PageProps {
+    params: Promise<{ user: string }>
+}
 
 // Função para gerar metadata usando os dados em cache
-export async function generateMetadata({ params }: ParamsProps): Promise<Metadata> {
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
     const { user } = await params
 
     const { userData, totalStars, totalCommits, valorAgregado } = await getCompleteGitHubData(user)
     
-    return GenerateMetadataModel({ totalCommits, totalStars, userData, valorAgregado})
+    return GenerateMetadataModel({ totalCommits, totalStars, userData, valorAgregado })
 }
 
-export default async function UserDetails({ params }: ParamsProps) {  
+export default async function UserDetails({ params }: PageProps) {  
     const { user } = await params
 
     const {
@@ -74,7 +77,8 @@ export default async function UserDetails({ params }: ParamsProps) {
         valorAgregado,
         pontosTotais,
         languageRepoCount,
-        rateLimitInfo
+        rateLimitInfo,
+        achievements
     } = await getCompleteGitHubData(user) // esses dados ele pega do cache da req já feita para os metadata
 
     return (
@@ -105,27 +109,25 @@ export default async function UserDetails({ params }: ParamsProps) {
 
                     <section>
                         <div className="flex flex-wrap justify-between items-end">
-                            <>
-                                <ButtonGithub />
-                                <div className="flex flex-wrap gap-4 items-center justify-end mt-3 max-sm:ml-auto">
-                                    <div>
-                                        <h2 className="text-primarybege font-inter text-4xl font-black">
-                                            {userData.name}
-                                        </h2>
-                                        <p className="text-primarybege font-medium">
-                                            @{userData.login}
-                                        </p>
-                                    </div>
-
-                                    <Image
-                                        src={userData.avatar_url}
-                                        alt={`Avatar do @${userData.login}`}
-                                        width={120}
-                                        height={120}
-                                        className="rounded-full"
-                                    />
+                            <div /> {/* Aqui terá um botão futuramente */}
+                            <div className="flex flex-wrap gap-4 items-center justify-end mt-3 max-sm:ml-auto">
+                                <div>
+                                    <h2 className="text-primarybege font-inter text-4xl font-black">
+                                        {userData.name}
+                                    </h2>
+                                    <p className="text-primarybege font-medium">
+                                        @{userData.login}
+                                    </p>
                                 </div>
-                            </>
+
+                                <Image
+                                    src={userData.avatar_url}
+                                    alt={`Avatar do @${userData.login}`}
+                                    width={120}
+                                    height={120}
+                                    className="rounded-full"
+                                />
+                            </div>
                         </div>
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 my-4 mt-12 gap-8">
@@ -136,7 +138,7 @@ export default async function UserDetails({ params }: ParamsProps) {
                             />
                             <CardInfoUserSmall
                                 Icon={Box}
-                                title="Total de Repositorios"
+                                title="Total de Repositórios"
                                 value={repoCountExcludingForks}
                             />
                             <CardInfoUserSmall
@@ -151,7 +153,7 @@ export default async function UserDetails({ params }: ParamsProps) {
                                 Icon={DollarSign}
                                 title="Valor agregado"
                                 value={valorAgregado}
-                                about="Valor fictício estimado com base na sua atividade pública no GitHub, considerando estrelas, forks e commits."
+                                about={`Valor fictício que ${userData.name} agrega mensalmente com base na sua atividade pública no GitHub, considerando estrelas, forks e commits.`}
                             />
 
                             {languageRepoCount.length > 1 && (
@@ -191,9 +193,22 @@ export default async function UserDetails({ params }: ParamsProps) {
                             />
                         </div>
                     </section>
+
+                    <h2 className="text-primarybege text-4xl font-bold mb-2 mt-12">Distintivos de Conquista</h2>
+                    <section className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                        {achievements.map(item => (
+                            <ConquestModal 
+                                title={item.name}
+                                description={item.description}
+                                isComplete={item.completed}
+                                key={item.id}
+                            />
+                        ))}
+                    </section>
                         
                     <h2 className="text-primarybege text-4xl font-bold mb-2 mt-12">Gere seu card!</h2>
                     <Footer
+                        achievements={achievements}
                         avatar_url={userData.avatar_url}
                         name={userData.name}
                         nickname={userData.login}
