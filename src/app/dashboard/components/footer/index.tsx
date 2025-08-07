@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import Image from "next/image";
 import githubLogo from '@/assets/github-logo.svg'
 import { Achievement } from "@/lib/calculateAchievements";
+import { StackAnalysis } from "@/lib/stackAnalysis";
 
 interface CardFooter {
     valorAgregado: number;
@@ -16,7 +17,8 @@ interface CardFooter {
     name: string;
     nickname: string;
     avatar_url: string;
-    achievements: Achievement[]
+    achievements: Achievement[];
+    stackAnalysis: StackAnalysis;
 }
 
 export function Footer({
@@ -26,7 +28,8 @@ export function Footer({
     totalCommits,
     nickname,
     valorAgregado,
-    achievements
+    achievements,
+    stackAnalysis
 }: CardFooter) {
     const [showModal, setShowModal] = useState(false)
     const cardRef = useRef<HTMLDivElement>(null)
@@ -123,6 +126,25 @@ export function Footer({
                                     <div className='flex flex-col items-center'>
                                         <p className='text-3xl text-primarybege font-bold'>Meus pontos</p>
                                         <p className='text-4xl text-secondarygreen font-black'>+{pontosTotais}</p>
+                                    </div>
+                                </div>
+
+                                <div className='flex justify-around items-center gap-6 mt-4 pt-4 border-t-2 border-primarymediumblue'>
+                                    <div className='flex flex-col items-center'>
+                                        <p className='text-2xl text-primarybege font-bold'>Stack Principal</p>
+                                        <p className='text-3xl text-secondarygreen font-black'>{stackAnalysis.primaryStack}</p>
+                                    </div>
+
+                                    <div className='flex flex-col items-center'>
+                                        <p className='text-2xl text-primarybege font-bold'>Senioridade</p>
+                                        <p className='text-3xl text-secondaryyellow font-black'>{stackAnalysis.seniorityLevel}</p>
+                                        <p className='text-sm text-primarybege opacity-80'>Score: {stackAnalysis.seniorityScore}/100</p>
+                                    </div>
+
+                                    <div className='flex flex-col items-center'>
+                                        <p className='text-2xl text-primarybege font-bold'>Experiência</p>
+                                        <p className='text-xl text-secondarypurple font-black'>{stackAnalysis.stackSummary.experienceRange}</p>
+                                        <p className='text-sm text-primarybege opacity-80'>{stackAnalysis.stackSummary.totalLanguages} linguagens</p>
                                     </div>
                                 </div>
                             </div>
