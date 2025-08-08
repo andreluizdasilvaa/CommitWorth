@@ -1,5 +1,6 @@
 import { GraphQLClient, gql } from "graphql-request"
 import { Achievement, calculateAchievements } from "./calculateAchievements"
+import { StackAnalysis, analyzeStackAndSeniority } from "./stackAnalysis"
 
 const graphqlClient = new GraphQLClient("https://api.github.com/graphql", {
     headers: {
@@ -146,6 +147,7 @@ export interface GitHubCompleteData {
     }[]
     rateLimitInfo: RateLimitInfo
     achievements: Achievement[]
+    stackAnalysis: StackAnalysis
 }
 
 const SCORING_CONFIG = {
@@ -398,11 +400,15 @@ export async function getGitHubStatsGraphQL(username: string): Promise<GitHubCom
     // Calcular scores dos repositórios bem estruturados
     const wellStructuredRepoScores = calculateWellStructuredRepoScores(wellStructuredRepos)
 
+    // Analisar stack e senioridade
+    const stackAnalysis = analyzeStackAndSeniority(data)
+
     // Calcular conquistas passando dados pré-calculados para consistência
     const achievements = calculateAchievements(data, {
         totalCommits,
         totalStars,
-        nonForkRepos
+        nonForkRepos,
+        stackAnalysis
     })
 
     return {
@@ -417,6 +423,7 @@ export async function getGitHubStatsGraphQL(username: string): Promise<GitHubCom
         pontosTotais,
         languageRepoCount,
         rateLimitInfo,
-        achievements
+        achievements,
+        stackAnalysis
     }
 }

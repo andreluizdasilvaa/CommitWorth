@@ -19,6 +19,7 @@ import { CardPopularReposChart } from "../components/charts/cardPopularReposChar
 import { WellStructuredRepoScoresChart } from "../components/charts/wellStructuredRepoScoresChart"
 import { RateLimitModal } from "../components/rateLimitModal"
 import { ConquestModal } from "../components/conquestCard"
+import { StackAnalysisCard } from "../components/stackAnalysisCard"
 
 import { Container } from "@/components/container"
 import LightRays from '@/components/LightRaysBG'
@@ -93,7 +94,8 @@ export default async function UserDetails({ params }: PageProps) {
         pontosTotais,
         languageRepoCount,
         rateLimitInfo,
-        achievements
+        achievements,
+        stackAnalysis
     } = await getCompleteGitHubData(user) // esses dados ele pega do cache da req já feita para os metadata
 
     return (
@@ -163,6 +165,10 @@ export default async function UserDetails({ params }: PageProps) {
                             />
                         </div>
 
+                        <div className="my-8">
+                            <StackAnalysisCard stackAnalysis={stackAnalysis} />
+                        </div>
+
                         <div className="grid grid-cols-1 lg:grid-cols-2 my-4 mt-8 gap-8">
                             <CardInfoUserBigNumber
                                 Icon={DollarSign}
@@ -230,6 +236,7 @@ export default async function UserDetails({ params }: PageProps) {
                         pontosTotais={pontosTotais}
                         totalCommits={totalCommits}
                         valorAgregado={valorAgregado}
+                        stackAnalysis={stackAnalysis}
                     />
                 </Container>
             </div>
