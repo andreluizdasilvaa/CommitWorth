@@ -59,9 +59,9 @@ O dashboard apresenta as seguintes métricas:
 
 | Tipo    | Valor   |
 |--------|---------|
-| Commit | R$0,02  |
+| Commit | R$2,00  |
 | Estrela| R$0,50  |
-| Fork   | R$0,30  |
+| Fork   | R$1,00  |
 
 - **Linguagens mais utilizadas:** Linguagens predominantes nos repositórios.
 - **Pontos do usuário:** Calculados conforme critérios abaixo:

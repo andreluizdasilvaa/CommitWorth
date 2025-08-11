@@ -1,36 +1,5 @@
-import { GitHubStatsResponse } from "./getGithubData";
-import { StackAnalysis } from "./stackAnalysis";
-
-export interface Achievement {
-    id: string;
-    name: string;
-    description: string;
-    completed: boolean;
-    progress?: number;
-    maxProgress?: number;
-}
-
-interface PreCalculatedData {
-    totalCommits: number;
-    totalStars: number;
-    nonForkRepos: any[];
-    stackAnalysis?: StackAnalysis;
-}
-
-// Constantes para os thresholds dos achievements
-const ACHIEVEMENT_THRESHOLDS = {
-    CODE_WARRIOR_COMMITS: 1000,
-    CODE_EMPIRE_REPOS: 50,
-    GITHUB_ARCHITECT_LANGUAGES: 10,
-    GITHUB_STAR_TOTAL: 100,
-    GOLDEN_PROJECT_STARS: 500,
-    CODE_VETERAN_YEARS: 10,
-    GITHUB_OLD_SCHOOL_YEARS: 5,
-    STACK_SPECIALIST_SCORE: 70,
-    TECH_LEADER_LEVEL: 'Tech Lead',
-    SENIOR_LEVEL: 'Senior',
-    POLYGLOT_LANGUAGES: 15,
-} as const
+import { ACHIEVEMENT_THRESHOLDS } from "@/constants/valuesConfig";
+import { Achievement, GitHubStatsResponse, PreCalculatedData } from "../types";
 
 function calculateAccountAge(createdAt: string): number {
     try {

@@ -9,7 +9,7 @@ import {
 import { redirect, notFound } from "next/navigation"
 import { cache } from 'react'
 
-import { getGitHubStatsGraphQL, GitHubCompleteData } from "@/lib/getGithubData"
+import { getGitHubStatsGraphQL } from "@/lib/getGithubData"
 
 import { Footer } from "../components/footer"
 import { CardInfoUserSmall } from "../components/cardInfoUserSmall"
@@ -26,6 +26,7 @@ import LightRays from '@/components/LightRaysBG'
 import { Header } from "@/components/header"
 import { Metadata } from "next"
 import { GenerateMetadataModel } from "../utils/generateMetadata"
+import { GitHubCompleteData } from "@/lib/types"
 
 // Função com cache para buscar TODOS os dados com UMA única requisição
 const getCompleteGitHubData = cache(async (user: string): Promise<GitHubCompleteData> => {
@@ -127,7 +128,7 @@ export default async function UserDetails({ params }: PageProps) {
                     <section>
                         <div className="flex flex-wrap justify-between items-end">
                             <div /> {/* Aqui terá um botão futuramente */}
-                            <div className="flex flex-wrap gap-4 items-center justify-end mt-3 max-sm:ml-auto">
+                            <div className="flex break-all gap-4 items-center justify-end mt-3 max-sm:ml-auto">
                                 <div>
                                     <h2 className="text-primarybege font-inter text-4xl font-black">
                                         {userData.name}
@@ -181,6 +182,7 @@ export default async function UserDetails({ params }: PageProps) {
                                 <CardLanguageChart
                                     title="Linguagens mais utilizadas"
                                     value={languageRepoCount}
+                                    about="Aqui mostramos só a linguagem principal de cada projeto seu."
                                 />
                             )}
 

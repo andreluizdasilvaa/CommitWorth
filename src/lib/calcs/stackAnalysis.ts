@@ -1,4 +1,4 @@
-import { GitHubStatsResponse } from "./getGithubData";
+import { GitHubStatsResponse } from "../types";
 
 export interface StackAnalysis {
     primaryStack: string;
