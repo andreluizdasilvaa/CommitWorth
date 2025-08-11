@@ -7,7 +7,8 @@ import { ModalShareCard } from "../modalShareCard";
 import { toast } from "sonner";
 import Image from "next/image";
 import githubLogo from '@/assets/github-logo.svg'
-import { Achievement } from "@/lib/calculateAchievements";
+import { Achievement } from "@/lib/types";
+import { StackAnalysis } from "@/lib/calcs/stackAnalysis";
 
 interface CardFooter {
     valorAgregado: number;
@@ -16,7 +17,8 @@ interface CardFooter {
     name: string;
     nickname: string;
     avatar_url: string;
-    achievements: Achievement[]
+    achievements: Achievement[];
+    stackAnalysis: StackAnalysis;
 }
 
 export function Footer({
@@ -26,7 +28,8 @@ export function Footer({
     totalCommits,
     nickname,
     valorAgregado,
-    achievements
+    achievements,
+    stackAnalysis
 }: CardFooter) {
     const [showModal, setShowModal] = useState(false)
     const cardRef = useRef<HTMLDivElement>(null)
@@ -53,19 +56,27 @@ export function Footer({
                 <ModalShareCard nickname={nickname} setShowModal={setShowModal}/>
             )}
             <footer className="w-full">
-                <div className="flex items-center justify-center xl:justify-between flex-wrap px-4 sm:px-12 pb-4 sm:pt-12 h-full bg-primaryblue rounded-t-3xl gap-8">
+                <div className="flex items-center justify-center xl:justify-between flex-wrap px-4 sm:px-12 pb-8 sm:pt-12 h-full bg-primaryblue rounded-t-3xl gap-8">
 
                     <div className="flex items-center justify-center max-w-[500px] max-h-[257px] scale-[0.30] sm:scale-[0.45] ">
 
-                        <div ref={cardRef} className='select-none flex flex-col items-center justify-between bg-primarydark pt-5 px-8 w-full min-w-[1200px] min-h-[630px] scale-90'>
-                            <div className='flex flex-col w-full gap-2'>
-                                <Logo
-                                    isImg={true}
-                                    className="opacity-50"
-                                />
-
-                                <h1 className='text-primarybege text-5xl text-center mx-auto font-black max-w-2xl'>Veja Quanto eu Gerei com meus <span className="bg-gradient-to-r from-secondarypurple to-secondarygreen bg-clip-text text-transparent">Commits</span> no GitHub!</h1>
-                            </div>
+                        <div
+                            ref={cardRef}
+                            key={nickname}
+                            className='select-none flex flex-col items-center justify-between bg-primarydark pt-5 px-8 w-full min-w-[1200px] min-h-[630px] scale-90'
+                        >
+                            <Logo
+                                isImg={true}
+                                className="absolute top-8 left-8 opacity-50"
+                            />
+                            
+                            <h1 className='text-primarybege text-5xl text-center mx-auto font-black max-w-2xl py-4 pt-6'>
+                                Veja Quanto eu Gerei com meus{" "}
+                                <span className="bg-gradient-to-r from-secondarypurple to-secondarygreen bg-clip-text text-transparent">
+                                    Commits
+                                </span>{" "}
+                                no GitHub!
+                            </h1>
 
                             <div className='w-full rounded-t-2xl bg-primaryblue px-6 pt-6'>
                                 <div className='flex items-start justify-between'>
@@ -92,16 +103,18 @@ export function Footer({
                                         </div>
 
                                         <Image
+                                            key={avatar_url}
                                             src={avatar_url}
                                             alt={`Avatar do @${name}`}
                                             width={120}
                                             height={120}
                                             className="rounded-full"
+                                            unoptimized
                                         />
                                     </div>
                                 </div>
 
-                                <div className='flex justify-around items-center gap-3'>
+                                <div className='flex justify-around items-center mt-4 gap-3'>
 
                                     <div className='flex flex-col items-center'>
                                         <p className='text-3xl text-primarybege font-bold'>Total de commits</p>
@@ -123,6 +136,25 @@ export function Footer({
                                     <div className='flex flex-col items-center'>
                                         <p className='text-3xl text-primarybege font-bold'>Meus pontos</p>
                                         <p className='text-4xl text-secondarygreen font-black'>+{pontosTotais}</p>
+                                    </div>
+                                </div>
+
+                                <div className='flex justify-around items-center gap-6 py-2 border-t-2 border-primarymediumblue'>
+                                    <div className='flex flex-col items-center'>
+                                        <p className='text-2xl text-primarybege font-bold'>Stack Principal</p>
+                                        <p className='text-3xl text-secondarygreen font-black'>{stackAnalysis.primaryStack}</p>
+                                    </div>
+
+                                    <div className='flex flex-col items-center'>
+                                        <p className='text-2xl text-primarybege font-bold'>Senioridade</p>
+                                        <p className='text-3xl text-secondaryyellow font-black'>{stackAnalysis.seniorityLevel}</p>
+                                        <p className='text-sm text-primarybege opacity-80'>Score: {stackAnalysis.seniorityScore}/100</p>
+                                    </div>
+
+                                    <div className='flex flex-col items-center'>
+                                        <p className='text-2xl text-primarybege font-bold'>Experiência</p>
+                                        <p className='text-xl text-secondarypurple font-black'>{stackAnalysis.stackSummary.experienceRange}</p>
+                                        <p className='text-sm text-primarybege opacity-80'>{stackAnalysis.stackSummary.totalLanguages} linguagens</p>
                                     </div>
                                 </div>
                             </div>

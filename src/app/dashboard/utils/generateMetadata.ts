@@ -1,5 +1,5 @@
-import { Achievement } from "@/lib/calculateAchievements";
-import { UserProps } from "@/types/user"
+import { Achievement } from "@/lib/types"; 
+import { UserProps } from "@/lib/types"
 import { Metadata } from "next";
 
 interface MetadataProps {
@@ -333,7 +333,6 @@ export function GenerateMetadataModel({
             }
         }
     } catch (error) {
-        console.error('Erro ao gerar metadata:', error);
 
         // Fallback metadata em caso de erro
         return {

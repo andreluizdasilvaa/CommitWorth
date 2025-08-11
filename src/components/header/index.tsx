@@ -11,18 +11,18 @@ export function Header({ isDashboard }: { isDashboard?: boolean }) {
     return (
         <>
             <header className='w-full flex items-center py-10 bg-transparent'>
-                <div className='w-full flex items-center justify-between max-w-7xl mx-auto px-4'>
+                <div className='w-full flex items-center flex-wrap gap-4 justify-between max-w-7xl mx-auto px-4'>
                     <Logo />
 
+                    {isDashboard && (
+                        <Link className='hover:text-primarybege transition-all duration-75 text-secondarygray font-bold' href="/about">
+                            Como são calculados os valores?
+                        </Link>
+                    )}
                     {!isDashboard && (
                         <>
                             <nav className='hidden sm:flex'>
                                 <ul className='flex items-center text-secondarygray font-bold gap-6'>
-                                    <li>
-                                        <Link onClick={() => toast.message("Ainda em desenvolvimento 😅")} className='hover:text-primarybege transition-all duration-75' href="#">
-                                            Ranking
-                                        </Link>
-                                    </li>
                                     <li>
                                         <a className='hover:text-primarybege transition-all duration-75' target='_blank' href="https://www.linkedin.com/in/andr%C3%A9-luiz-da-silva/">
                                             Linkedin
@@ -32,6 +32,11 @@ export function Header({ isDashboard }: { isDashboard?: boolean }) {
                                         <a className='hover:text-primarybege transition-all duration-75' target='_blank' href="https://github.com/andreluizdasilvaa/CommitWorth">
                                             Github
                                         </a>
+                                    </li>
+                                    <li>
+                                        <Link className='hover:text-primarybege transition-all duration-75' href="/about">
+                                            Sobre
+                                        </Link>
                                     </li>
                                 </ul>
                             </nav>
@@ -85,7 +90,6 @@ export function Header({ isDashboard }: { isDashboard?: boolean }) {
                     </div>
                 </div>
             )}
-           
         </>
     )
 }

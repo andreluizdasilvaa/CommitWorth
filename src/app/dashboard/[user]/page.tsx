@@ -9,7 +9,7 @@ import {
 import { redirect, notFound } from "next/navigation"
 import { cache } from 'react'
 
-import { getGitHubStatsGraphQL, GitHubCompleteData } from "@/lib/getGithubData"
+import { getGitHubStatsGraphQL } from "@/lib/getGithubData"
 
 import { Footer } from "../components/footer"
 import { CardInfoUserSmall } from "../components/cardInfoUserSmall"
@@ -19,12 +19,14 @@ import { CardPopularReposChart } from "../components/charts/cardPopularReposChar
 import { WellStructuredRepoScoresChart } from "../components/charts/wellStructuredRepoScoresChart"
 import { RateLimitModal } from "../components/rateLimitModal"
 import { ConquestModal } from "../components/conquestCard"
+import { StackAnalysisCard } from "../components/stackAnalysisCard"
 
 import { Container } from "@/components/container"
 import LightRays from '@/components/LightRaysBG'
 import { Header } from "@/components/header"
 import { Metadata } from "next"
 import { GenerateMetadataModel } from "../utils/generateMetadata"
+import { GitHubCompleteData } from "@/lib/types"
 
 // Função com cache para buscar TODOS os dados com UMA única requisição
 const getCompleteGitHubData = cache(async (user: string): Promise<GitHubCompleteData> => {
@@ -93,7 +95,8 @@ export default async function UserDetails({ params }: PageProps) {
         pontosTotais,
         languageRepoCount,
         rateLimitInfo,
-        achievements
+        achievements,
+        stackAnalysis
     } = await getCompleteGitHubData(user) // esses dados ele pega do cache da req já feita para os metadata
 
     return (
@@ -125,7 +128,7 @@ export default async function UserDetails({ params }: PageProps) {
                     <section>
                         <div className="flex flex-wrap justify-between items-end">
                             <div /> {/* Aqui terá um botão futuramente */}
-                            <div className="flex flex-wrap gap-4 items-center justify-end mt-3 max-sm:ml-auto">
+                            <div className="flex break-all gap-4 items-center justify-end mt-3 max-sm:ml-auto">
                                 <div>
                                     <h2 className="text-primarybege font-inter text-4xl font-black">
                                         {userData.name}
@@ -163,6 +166,10 @@ export default async function UserDetails({ params }: PageProps) {
                             />
                         </div>
 
+                        <div className="my-8">
+                            <StackAnalysisCard stackAnalysis={stackAnalysis} />
+                        </div>
+
                         <div className="grid grid-cols-1 lg:grid-cols-2 my-4 mt-8 gap-8">
                             <CardInfoUserBigNumber
                                 Icon={DollarSign}
@@ -175,6 +182,7 @@ export default async function UserDetails({ params }: PageProps) {
                                 <CardLanguageChart
                                     title="Linguagens mais utilizadas"
                                     value={languageRepoCount}
+                                    about="Aqui mostramos só a linguagem principal de cada projeto seu."
                                 />
                             )}
 
@@ -230,6 +238,7 @@ export default async function UserDetails({ params }: PageProps) {
                         pontosTotais={pontosTotais}
                         totalCommits={totalCommits}
                         valorAgregado={valorAgregado}
+                        stackAnalysis={stackAnalysis}
                     />
                 </Container>
             </div>

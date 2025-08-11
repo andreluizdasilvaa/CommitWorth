@@ -1,30 +1,5 @@
-import { GitHubStatsResponse } from "./getGithubData";
-
-export interface Achievement {
-    id: string;
-    name: string;
-    description: string;
-    completed: boolean;
-    progress?: number;
-    maxProgress?: number;
-}
-
-interface PreCalculatedData {
-    totalCommits: number;
-    totalStars: number;
-    nonForkRepos: any[];
-}
-
-// Constantes para os thresholds dos achievements
-const ACHIEVEMENT_THRESHOLDS = {
-    CODE_WARRIOR_COMMITS: 1000,
-    CODE_EMPIRE_REPOS: 50,
-    GITHUB_ARCHITECT_LANGUAGES: 10,
-    GITHUB_STAR_TOTAL: 100,
-    GOLDEN_PROJECT_STARS: 500,
-    CODE_VETERAN_YEARS: 10,
-    GITHUB_OLD_SCHOOL_YEARS: 5,
-} as const
+import { ACHIEVEMENT_THRESHOLDS } from "@/constants/valuesConfig";
+import { Achievement, GitHubStatsResponse, PreCalculatedData } from "../types";
 
 function calculateAccountAge(createdAt: string): number {
     try {
@@ -162,6 +137,51 @@ export function calculateAchievements(
         progress: oldSchoolProgress,
         maxProgress: ACHIEVEMENT_THRESHOLDS.GITHUB_OLD_SCHOOL_YEARS
     })
+
+    // Achievements relacionados à Stack Analysis
+    if (preCalculated?.stackAnalysis) {
+        const stackAnalysis = preCalculated.stackAnalysis
+
+        // Stack Specialist (Score 70+)
+        achievements.push({
+            id: "stack_specialist",
+            name: "Especialista de Stack",
+            description: "Atingiu senioridade avançada na sua stack principal",
+            completed: stackAnalysis.seniorityScore >= ACHIEVEMENT_THRESHOLDS.STACK_SPECIALIST_SCORE,
+            progress: Math.min(stackAnalysis.seniorityScore, ACHIEVEMENT_THRESHOLDS.STACK_SPECIALIST_SCORE),
+            maxProgress: ACHIEVEMENT_THRESHOLDS.STACK_SPECIALIST_SCORE
+        })
+
+        // Tech Leader
+        achievements.push({
+            id: "tech_leader",
+            name: "Líder Técnico",
+            description: "Alcançou o nível Tech Lead de senioridade",
+            completed: stackAnalysis.seniorityLevel === ACHIEVEMENT_THRESHOLDS.TECH_LEADER_LEVEL,
+            progress: stackAnalysis.seniorityLevel === ACHIEVEMENT_THRESHOLDS.TECH_LEADER_LEVEL ? 1 : 0,
+            maxProgress: 1
+        })
+
+        // Senior Developer
+        achievements.push({
+            id: "senior_developer",
+            name: "Desenvolvedor Sênior",
+            description: "Atingiu o nível Sênior ou superior",
+            completed: ['Senior', 'Tech Lead'].includes(stackAnalysis.seniorityLevel),
+            progress: ['Senior', 'Tech Lead'].includes(stackAnalysis.seniorityLevel) ? 1 : 0,
+            maxProgress: 1
+        })
+
+        // Polyglot (15+ linguagens)
+        achievements.push({
+            id: "polyglot",
+            name: "Poliglota",
+            description: "Domina 15 ou mais linguagens de programação",
+            completed: stackAnalysis.stackSummary.totalLanguages >= ACHIEVEMENT_THRESHOLDS.POLYGLOT_LANGUAGES,
+            progress: Math.min(stackAnalysis.stackSummary.totalLanguages, ACHIEVEMENT_THRESHOLDS.POLYGLOT_LANGUAGES),
+            maxProgress: ACHIEVEMENT_THRESHOLDS.POLYGLOT_LANGUAGES
+        })
+    }
     
     return achievements
 }
