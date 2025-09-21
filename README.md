@@ -14,7 +14,7 @@
 
 ## 🟢 Descrição Geral
 
-O **CommitWorth** é uma plataforma gamificada que calcula o "valor agregado" do trabalho de desenvolvedores utilizando dados públicos do GitHub. Basta informar um username válido para acessar um dashboard exclusivo com diversas métricas, análise de stack tecnológica, detecção de senioridade e conquistas.
+O **CommitWorth** é uma plataforma gamificada que calcula o "valor agregado" do trabalho de desenvolvedores utilizando dados do GitHub, incluindo repositórios públicos, privados e de organizações. Basta informar um username válido e configurar um token de acesso para acessar um dashboard exclusivo com diversas métricas, análise de stack tecnológica, detecção de senioridade e conquistas.
 
 **✨ Principais Funcionalidades:**
 - 📊 **Análise completa** de repositórios e atividade no GitHub
@@ -34,7 +34,7 @@ O **CommitWorth** é uma plataforma gamificada que calcula o "valor agregado" do
 ## ⚙️ Funcionamento
 
 1. O usuário informa seu username do GitHub.
-2. O sistema coleta dados públicos via API do GitHub.
+2. O sistema coleta dados via API do GitHub (repositórios públicos, privados e de organizações, conforme as permissões do token).
 3. **As métricas são processadas e a análise de stack é realizada:**
    - Identificação da linguagem/stack principal
    - Cálculo do score de senioridade
@@ -50,8 +50,8 @@ O **CommitWorth** é uma plataforma gamificada que calcula o "valor agregado" do
 
 O dashboard apresenta as seguintes métricas:
 
-- **Total de Estrelas:** Soma das estrelas em todos os repositórios públicos.
-- **Total de Repositórios:** Quantidade de repositórios públicos.
+- **Total de Estrelas:** Soma das estrelas em todos os repositórios acessíveis.
+- **Total de Repositórios:** Quantidade total de repositórios (públicos, privados e de organizações, conforme permissões).
 - **Total de Commits:** Total de commits somados de todos os repositórios.
 - **Valor Agregado:** Valor fictício calculado com base na atividade no GitHub.
 
@@ -202,6 +202,16 @@ Na parte inferior do dashboard, há um botão para gerar uma imagem personalizad
 
 ## 🚀 Como Testar
 
+> **⭐ IMPORTANTE: Branch Especial para Dados Privados**
+> 
+> Esta branch foi especialmente desenvolvida para permitir a visualização completa dos seus dados do GitHub, incluindo:
+> - Repositórios privados
+> - Repositórios de organizações
+> - Projetos colaborativos privados
+> - Contribuições em organizações
+>
+> Para aproveitar esses recursos, certifique-se de configurar corretamente o token com as permissões necessárias conforme as instruções abaixo.
+
 Para testar o projeto localmente:
 
 1. **Clone o repositório:**
@@ -216,9 +226,25 @@ Para testar o projeto localmente:
    ```
 
 3. **Configure o token do GitHub:**
-   - Crie um arquivo `.env.local`
-   - Adicione: `GITHUB_TOKEN_FOR_REQUESTS=seu_token_aqui`
-   - Obtenha seu token em: https://github.com/settings/tokens
+   - Crie um arquivo `.env`
+   - Adicione as seguintes variáveis:
+     ```
+     GITHUB_TOKEN_FOR_REQUESTS=seu_token_aqui
+     NEXT_PUBLIC_HOST_URL=http://localhost:3000
+     ```
+   - Obtenha seu Personal Access Token (PAT) em: https://github.com/settings/tokens
+   - Ao gerar o token, selecione os seguintes escopos:
+     - `repo` (para acessar repositórios privados)
+     - `read:org` (para ler dados das organizações)
+     - `read:user` (para ler dados do perfil)
+
+   > ⚠️ **IMPORTANTE:** Esta versão do projeto funciona melhor quando você está visualizando seu próprio perfil (dono do token). 
+   > Ao tentar visualizar o perfil de outros usuários com seu token pessoal:
+   > - Algumas métricas podem não estar disponíveis ou aparecer incompletas
+   > - Dados privados e de organizações não serão acessíveis
+   > - Podem ocorrer erros na API ao tentar acessar certos dados
+   > 
+   > Recomendamos usar esta branch principalmente para visualizar seus próprios dados.
 
 4. **Execute o projeto:**
    ```bash
@@ -226,6 +252,14 @@ Para testar o projeto localmente:
    ```
 
 5. **Acesse:** http://localhost:3000
+
+## ⭐ Recursos Exclusivos desta Branch
+
+Esta versão da CommitWorth inclui recursos especiais para desenvolvedores que desejam uma análise mais completa:
+
+- **Visualização de Repositórios Privados:** Veja as métricas de seus repositórios privados
+- **Dados de Organizações:** Acesso a contribuições em organizações das quais você faz parte
+- **Privacidade Garantida:** Seus dados privados são acessados apenas localmente através do seu token pessoal
 
 ## 🛠️ Tecnologias Utilizadas
 
