@@ -17,11 +17,12 @@ import { identifyWellStructuredRepos } from "./calcs/identifyWellStructuredRepos
 import { calculateValorAgregado } from "./calcs/calculateValorAgregado"
 import { calculatePontosTotais } from "./calcs/calculatePontosTotais"
 import { calcStructuredRepoScores } from "./calcs/calcStructuredRepoScores"
+import { fetchAllReposAndUser } from "./api/fetchAllReposAndUser"
 
 async function fetchGitHubData(username: string): Promise<GitHubStatsResponse> {
-    try {
-        return await graphqlClient.request<GitHubStatsResponse>(queryGitHubData, { login: username })
-    } catch (error) {
+  try {
+    return await fetchAllReposAndUser(username);
+  } catch (error) {
         throw error
     }
 }
