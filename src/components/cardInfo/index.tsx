@@ -8,7 +8,7 @@ interface CardInfo {
 
 export function CardInfo({ icon: Icon, title, description }: CardInfo) {
     return (
-        <div className="flex flex-col gap-2 p-3 rounded-2xl border-1 border-primaryblue bg-transparent max-w-sm min-h-40">
+        <div className="flex flex-col gap-2 p-3 rounded-2xl border-1 border-primaryblue bg-primaryblue/10 backdrop-blur-md max-w-sm min-h-40 hover:scale-105 transition duration-300 ease-in-out cursor-cell">
             <div className="flex items-center gap-2 text-xl font-bold text-primarybege">
                 <Icon size={26} color="#fff" />
                 <p>{title}</p>

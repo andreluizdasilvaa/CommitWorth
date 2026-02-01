@@ -79,7 +79,7 @@ export const metadata: Metadata = {
         siteName: "CommitWorth - Dashboard",
         images: [
             {
-                url: "/github-hero.png",
+                url: "/logo.svg",
                 width: 401,
                 height: 401,
                 alt: "CommitWorth - Análise GitHub com valor agregado, commits e distintivos"
@@ -94,7 +94,7 @@ export const metadata: Metadata = {
         card: "summary_large_image",
         title: "CommitWorth - Valorize seus commits no GitHub! 💻✨",
         description: "🎯 Dashboard completo + Card personalizado + Distintivos exclusivos. Descubra o valor real dos seus commits agora!",
-        images: ["/github-hero.png"],
+        images: ["/logo.svg"],
         creator: "@andreVsemR",
         site: process.env.NEXT_PUBLIC_HOST_URL || 'https://commitworth.vercel.app'
     },
@@ -116,13 +116,9 @@ export const metadata: Metadata = {
         },
     },
     icons: {
-        icon: [
-            { url: "/github-logo.svg", type: "image/svg+xml", sizes: "any" }
-        ],
-        shortcut: "/github-logo.svg",
-        apple: [
-            { url: "/github-hero.png", sizes: "180x180", type: "image/png" }
-        ]
+        icon: "/logo.svg",
+        shortcut: "/logo.svg",
+        apple: "/logo.svg"
     },
 
     alternates: {
@@ -162,7 +158,7 @@ export const metadata: Metadata = {
                 description: 'Dashboard gratuito do CommitWorth com análise completa de commits, cálculo de valor agregado e geração de cards personalizados'
             },
             downloadUrl: process.env.NEXT_PUBLIC_HOST_URL || 'https://commitworth.vercel.app',
-            screenshot: `${process.env.NEXT_PUBLIC_HOST_URL || 'https://commitworth.vercel.app'}/github-hero.png`,
+            screenshot: `${process.env.NEXT_PUBLIC_HOST_URL || 'https://commitworth.vercel.app'}/logo.svg`,
             releaseNotes: 'Dashboard CommitWorth com cálculo de valor agregado, sistema de pontuação e distintivos de conquista',
             featureList: [
                 'Análise completa de repositórios GitHub',

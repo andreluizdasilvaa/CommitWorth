@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import ImageGithub from '@/assets/github-logo.svg'
+import ImageLogo from '@/assets/logo.svg'
 
 export function Logo({ isImg, className }: { isImg?:boolean, className?: string  }) {
     let linkHref = isImg ? '#' : '/'
@@ -10,7 +10,7 @@ export function Logo({ isImg, className }: { isImg?:boolean, className?: string 
     return (
         <Link href={linkHref} className={`flex items-center gap-2 cursor-cell ${className}`}>
             <Image 
-                src={ImageGithub}
+                src={ImageLogo}
                 alt='Logo CommitWorth'
                 width={30}
                 height={30}

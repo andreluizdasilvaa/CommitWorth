@@ -6,7 +6,7 @@ import { Logo } from '@/components/logo';
 import { ModalShareCard } from "../modalShareCard";
 import { toast } from "sonner";
 import Image from "next/image";
-import githubLogo from '@/assets/github-logo.svg'
+import MoneyIcon from '@/assets/Points_icon.svg'
 import { Achievement } from "@/lib/types";
 import { StackAnalysis } from "@/lib/calcs/stackAnalysis";
 
@@ -38,7 +38,35 @@ export function Footer({
         if (!cardRef.current) return
 
         try {
-            const dataUrl = await toPng(cardRef.current, { cacheBust: true })
+            const cardElement = cardRef.current
+            const containerElement = cardElement.parentElement
+
+            // Salva os estilos originais
+            const originalCardTransform = cardElement.style.transform
+            const originalContainerTransform = containerElement?.style.transform || ''
+
+            // Remove os scales temporariamente
+            cardElement.style.transform = 'scale(1)'
+            if (containerElement) {
+                containerElement.style.transform = 'scale(1)'
+            }
+
+            // Aguarda a renderização
+            await new Promise(resolve => setTimeout(resolve, 200))
+
+            // Captura a imagem SEM processar web fonts
+            const dataUrl = await toPng(cardElement, {
+                cacheBust: true,
+                pixelRatio: 2,
+                backgroundColor: '#0D1321',
+                skipFonts: true // Ignora as fontes externas
+            })
+
+            // Restaura os estilos originais
+            cardElement.style.transform = originalCardTransform
+            if (containerElement) {
+                containerElement.style.transform = originalContainerTransform
+            }
 
             const link = document.createElement("a")
             link.download = "meu-card.png"
@@ -46,6 +74,7 @@ export function Footer({
             link.click()
             setShowModal(true)
         } catch (err) {
+            console.error(err)
             toast.error('Erro ao gerar imagem, tente novamente mais tarde')
         }
     }
@@ -53,7 +82,7 @@ export function Footer({
     return (
         <>
             {showModal && (
-                <ModalShareCard nickname={nickname} setShowModal={setShowModal}/>
+                <ModalShareCard nickname={nickname} setShowModal={setShowModal} />
             )}
             <footer className="w-full">
                 <div className="flex items-center justify-center xl:justify-between flex-wrap px-4 sm:px-12 pb-8 sm:pt-12 h-full bg-primaryblue rounded-t-3xl gap-8">
@@ -69,7 +98,7 @@ export function Footer({
                                 isImg={true}
                                 className="absolute top-8 left-8 opacity-50"
                             />
-                            
+
                             <h1 className='text-primarybege text-5xl text-center mx-auto font-black max-w-2xl py-4 pt-6'>
                                 Veja Quanto eu Gerei com meus{" "}
                                 <span className="bg-gradient-to-r from-secondarypurple to-secondarygreen bg-clip-text text-transparent">
@@ -89,7 +118,7 @@ export function Footer({
                                                 <span className="text-secondarygreen text-shadow-lg font-medium">{item.name}</span>
                                             </div>
                                         ))}
-                                        
+
                                     </div>
 
                                     <div className="flex gap-4 items-center justify-end">
@@ -125,7 +154,7 @@ export function Footer({
                                         <div className='flex items-center justify-between w-full px-12'>
                                             <p className='text-primarybege text-2xl font-bold'>Valor agregado</p>
                                             <Image
-                                                src={githubLogo}
+                                                src={MoneyIcon}
                                                 alt='Github Logo'
                                                 width={25}
                                             />

@@ -4,7 +4,7 @@ import githubHero from '@/assets/github-hero.png'
 
 import { Container } from "@/components/container"
 import { Header } from "@/components/header"
-import DarkVeil from '@/components/darkVeilBG'
+import LightPillar from '@/components/LightPillar'
 import { InputForm } from "@/components/inputForm"
 import { CardInfo } from "@/components/cardInfo"
 import { GradientText } from "@/components/gradientText"
@@ -12,8 +12,21 @@ import { GradientText } from "@/components/gradientText"
 export default function Home() {
     return (
         <div className="w-screen h-screen overflow-x-hidden relative">
-            <div className="absolute inset-0 z-0">
-                <DarkVeil backgroundColor="#0D1321" />
+            <div className="fixed inset-0 z-0">
+                <LightPillar
+                    topColor="#1D2D44"
+                    bottomColor="#613DC1"
+                    intensity={1.2}
+                    rotationSpeed={0.4}
+                    glowAmount={0.005}
+                    pillarWidth={3.5}
+                    pillarHeight={0.5}
+                    noiseIntensity={1}
+                    pillarRotation={-25}
+                    interactive={false}
+                    mixBlendMode="color"
+                    quality="high"
+                />
             </div>
 
             <div className="relative z-10">
@@ -40,8 +53,8 @@ export default function Home() {
 
                         <Image
                             src={githubHero}
-                            alt="Gihub foto"
-                            className="max-w-500 flex max-xl:hidden"
+                            alt="Github foto"
+                            className="max-w-135 flex max-xl:hidden drop-shadow-[0_0_20px_rgba(97,61,193,0.8)] select-none"
                         />
                     </section>
 
