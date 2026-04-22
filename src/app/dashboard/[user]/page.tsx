@@ -6,10 +6,6 @@ import {
     DollarSign,
     GitFork,
 } from 'lucide-react'
-import { redirect, notFound } from "next/navigation"
-import { cache } from 'react'
-
-import { getGitHubStatsGraphQL } from "@/lib/getGithubData"
 
 import { Footer } from "../components/footer"
 import { CardInfoUserSmall } from "../components/cardInfoUserSmall"
@@ -26,40 +22,17 @@ import LightRays from '@/components/LightRaysBG'
 import { Header } from "@/components/header"
 import { Metadata } from "next"
 import { GenerateMetadataModel } from "../utils/generateMetadata"
-import { GitHubCompleteData } from "@/lib/types"
-
-// Função com cache para buscar TODOS os dados com UMA única requisição
-const getCompleteGitHubData = cache(async (user: string): Promise<GitHubCompleteData> => {
-    try {
-        const data = await getGitHubStatsGraphQL(user)
-        return data
-
-    } catch (error: any) {
-        if (error?.response?.errors) {
-            const errors = error.response.errors
-            // usuário não encontrado
-            if (errors.some((err: any) => err.type === 'NOT_FOUND')) {
-                notFound()
-            }
-        }
-
-        if (error?.response?.status === 403) {
-            redirect('/')
-        }
-        
-        throw error
-    }
-})
+import getCompleteGitHubData from "@/lib/getCompleteGitHubData"
 
 interface PageProps {
     params: Promise<{ user: string }>
 }
 
-// Função para gerar metadata usando os dados em cache
+// Função para gerar metadatas
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
     const { user } = await params
 
-    const { 
+    const {
         userData, 
         totalStars, 
         totalCommits, 
@@ -68,7 +41,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
         pontosTotais,
         repoCountExcludingForks
 } = await getCompleteGitHubData(user)
-    
+
     return GenerateMetadataModel({ 
         totalCommits, 
         totalStars, 
@@ -80,7 +53,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     })
 }
 
-export default async function UserDetails({ params }: PageProps) {  
+export default async function UserDetails({ params }: PageProps) {
     const { user } = await params
 
     const {
@@ -97,7 +70,7 @@ export default async function UserDetails({ params }: PageProps) {
         rateLimitInfo,
         achievements,
         stackAnalysis
-    } = await getCompleteGitHubData(user) // esses dados ele pega do cache da req já feita para os metadata
+    } = await getCompleteGitHubData(user)
 
     return (
         <div className="w-screen h-screen overflow-x-hidden fixed">
@@ -119,12 +92,13 @@ export default async function UserDetails({ params }: PageProps) {
             <div className="relative z-10">
                 <Header isDashboard={true} />
                 <Container>
-                    <RateLimitModal 
-                        remainder={rateLimitInfo.remaining}
-                        reset={rateLimitInfo.resetAtRelative}
-                        totalLimit={rateLimitInfo.limit}
-                    />
-
+                    {process.env.NODE_ENV === 'development' && (
+                        <RateLimitModal
+                            remainder={rateLimitInfo.remaining}
+                            reset={rateLimitInfo.resetAtRelative}
+                            totalLimit={rateLimitInfo.limit}
+                        />
+                    )}
                     <section>
                         <div className="flex flex-wrap justify-between items-end">
                             <div /> {/* Aqui terá um botão futuramente */}
@@ -175,7 +149,7 @@ export default async function UserDetails({ params }: PageProps) {
                                 Icon={DollarSign}
                                 title="Valor agregado"
                                 value={valorAgregado}
-                                about={`Valor fictício que ${userData.name} agrega mensalmente com base na sua atividade pública no GitHub, considerando estrelas, forks e commits.`}
+                                about={`Valor fictício que ${userData.name || userData.login} agrega mensalmente com base na sua atividade pública no GitHub, considerando estrelas, forks e commits.`}
                             />
 
                             {languageRepoCount.length > 1 && (
