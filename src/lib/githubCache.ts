@@ -2,10 +2,18 @@ import { Redis } from "@upstash/redis"
 import { GitHubCompleteData } from '@/lib/types'
 import { gzipSync, gunzipSync } from 'zlib'
 
-export const redis = new Redis({
-    url: process.env.UPSTASH_REDIS_REST_URL!,
-    token: process.env.UPSTASH_REDIS_REST_TOKEN!,
-})
+function createRedisClient(): Redis {
+    const url = process.env.UPSTASH_REDIS_REST_URL
+    const token = process.env.UPSTASH_REDIS_REST_TOKEN
+
+    if (!url || !token) {
+        throw new Error('Variáveis UPSTASH_REDIS_REST_URL e UPSTASH_REDIS_REST_TOKEN são obrigatórias')
+    }
+
+    return new Redis({ url, token })
+}
+
+export const redis = createRedisClient()
 
 const CACHE_EXPIRATION_TIME = 2 * 60 * 60    // Tempo de expiração do cache em segundos (2 horas)
 const CACHE_KEY_PREFIX = 'gh:'           // Prefixo para as chaves no Redis
@@ -56,7 +64,7 @@ export async function setGitHubDataInCache(userName: string, data: GitHubComplet
         const compressed = gzipSync(jsonString)
         
         // Armazena no Redis com expiração
-        await redis.setex(cacheKey, CACHE_EXPIRATION_TIME, compressed)
+        await redis.setex(cacheKey, CACHE_EXPIRATION_TIME, compressed.toString('base64'))
     } catch (error) {
         console.error(`Erro ao salvar cache para ${userName}:`, error)
     }
