@@ -1,5 +1,10 @@
 import { GitHubStatsResponse } from "../types";
+import { NON_PROGRAMMING_LANGUAGES } from "@/constants/valuesConfig";
+import { calculateUnifiedCommitCount } from "./unifiedCommitCount";
 
+// O cálculo de senioridade usa dados já presentes na query.
+// Não traz histórico de commits por repo para não deixar a busca pesada.
+// Em vez disso, usa o total de contributions como proxy de atividade.
 export interface StackAnalysis {
     primaryStack: string;
     seniorityLevel: 'Junior' | 'Pleno' | 'Senior' | 'Tech Lead';
@@ -64,24 +69,16 @@ const SENIORITY_WEIGHTS = {
     complexityIndicators: 0.15
 } as const;
 
-function calculateAccountAge(createdAt: string): number {
-    try {
-        const accountCreated = new Date(createdAt);
-        const now = new Date();
-        
-        if (isNaN(accountCreated.getTime())) {
-            return 0;
-        }
-        
-        return (now.getTime() - accountCreated.getTime()) / (1000 * 60 * 60 * 24 * 365.25);
-    } catch {
-        return 0;
-    }
+function isProgrammingLanguage(language: string): boolean {
+    return !NON_PROGRAMMING_LANGUAGES.has(language)
 }
 
 function getLanguageFromRepo(repo: any): string[] {
     if (!repo.languages?.nodes) return [];
-    return repo.languages.nodes.map((lang: any) => lang.name).filter(Boolean);
+    return repo.languages.nodes
+        .map((lang: any) => lang.name)
+        .filter(Boolean)
+        .filter(isProgrammingLanguage);
 }
 
 function calculateFirstUseYear(repos: any[], language: string): number {
@@ -143,14 +140,26 @@ function calculateSeniorityIndicators(repos: any[], language: string) {
     };
 }
 
-function calculateLanguageCommits(repos: any[], language: string): number {
+function calculateLanguageCommits(repos: any[], language: string, totalContributions: number): number {
     const languageRepos = repos.filter(repo => 
         getLanguageFromRepo(repo).includes(language)
     );
-    
-    return languageRepos.reduce((total, repo) => {
-        return total + (repo.defaultBranchRef?.target?.history?.totalCount || 0);
-    }, 0);
+
+    if (languageRepos.length === 0) {
+        return 0;
+    }
+
+    // Estima commits da linguagem com base na participação dela nos repositórios.
+    // Usa o total geral de contributions como proxy de atividade.
+    const repoShare = languageRepos.length / Math.max(repos.length, 1);
+    const estimatedContributions = Math.round(totalContributions * repoShare);
+
+    if (estimatedContributions > 0) {
+        return estimatedContributions;
+    }
+
+    // Se não houver dados de contributions, usa um fallback leve por repositório.
+    return languageRepos.length * 5;
 }
 
 function calculateSeniorityScore(experience: StackAnalysis['stackExperience'][0]): number {
@@ -208,11 +217,13 @@ export function analyzeStackAndSeniority(data: GitHubStatsResponse): StackAnalys
     });
     
     // Criar análise de experiência para cada linguagem
+    // Usa o total de contributions para estimar atividade por linguagem.
+    const totalContributions = calculateUnifiedCommitCount(data);
     const stackExperience = Array.from(languageStats.entries())
         .map(([language, repositories]) => {
             const firstUseYear = calculateFirstUseYear(repos, language);
             const yearsOfExperience = Math.max(currentYear - firstUseYear + 1, 1);
-            const totalCommits = calculateLanguageCommits(repos, language);
+            const totalCommits = calculateLanguageCommits(repos, language, totalContributions);
             const seniorityIndicators = calculateSeniorityIndicators(repos, language);
             
             return {

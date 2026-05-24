@@ -1,61 +1,162 @@
 "use client"
 
 import * as React from "react"
-import * as TooltipPrimitive from "@radix-ui/react-tooltip"
 
 import { cn } from "@/lib/utils"
 
-function TooltipProvider({
-  delayDuration = 0,
-  ...props
-}: React.ComponentProps<typeof TooltipPrimitive.Provider>) {
+type TooltipContextType = {
+  open: boolean
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>
+  isTouch: boolean
+  triggerId: string
+  contentId: string
+}
+
+const TooltipContext = React.createContext<TooltipContextType | null>(null)
+
+function Tooltip({ children }: { children: React.ReactNode }) {
+  const [open, setOpen] = React.useState(false)
+  const [isTouch, setIsTouch] = React.useState(false)
+  const rootRef = React.useRef<HTMLDivElement | null>(null)
+  const triggerId = React.useId()
+  const contentId = React.useId()
+
+  React.useEffect(() => {
+    if (typeof window !== "undefined") {
+      const touch = "ontouchstart" in window || navigator.maxTouchPoints > 0
+      setIsTouch(touch)
+    }
+  }, [])
+
+  React.useEffect(() => {
+    if (!open) return
+
+    const handlePointerDown = (event: PointerEvent) => {
+      if (rootRef.current && !rootRef.current.contains(event.target as Node)) {
+        setOpen(false)
+      }
+    }
+
+    document.addEventListener("pointerdown", handlePointerDown)
+    return () => document.removeEventListener("pointerdown", handlePointerDown)
+  }, [open])
+
   return (
-    <TooltipPrimitive.Provider
-      data-slot="tooltip-provider"
-      delayDuration={delayDuration}
-      {...props}
-    />
+    <div ref={rootRef} className="relative inline-flex" data-tooltip-root>
+      <TooltipContext.Provider value={{ open, setOpen, isTouch, triggerId, contentId }}>
+        {children}
+      </TooltipContext.Provider>
+    </div>
   )
 }
 
-function Tooltip({
-  ...props
-}: React.ComponentProps<typeof TooltipPrimitive.Root>) {
-  return (
-    <TooltipProvider>
-      <TooltipPrimitive.Root data-slot="tooltip" {...props} />
-    </TooltipProvider>
-  )
-}
+function TooltipTrigger({ children }: { children: React.ReactElement<any> }) {
+  const context = React.useContext(TooltipContext)
 
-function TooltipTrigger({
-  ...props
-}: React.ComponentProps<typeof TooltipPrimitive.Trigger>) {
-  return <TooltipPrimitive.Trigger data-slot="tooltip-trigger" {...props} />
+  if (!context) {
+    return null
+  }
+
+  const { open, setOpen, isTouch, triggerId, contentId } = context
+
+  const handleMouseEnter = () => {
+    if (!isTouch) setOpen(true)
+  }
+
+  const handleMouseLeave = () => {
+    if (!isTouch) setOpen(false)
+  }
+
+  const handleFocus = () => {
+    if (!isTouch) setOpen(true)
+  }
+
+  const handleBlur = () => {
+    if (!isTouch) setOpen(false)
+  }
+
+  const handleClick = (event: React.MouseEvent<HTMLDivElement | HTMLButtonElement>) => {
+    if (isTouch) {
+      event.stopPropagation()
+      setOpen(prev => !prev)
+    }
+
+    if (children.props?.onClick) {
+      children.props.onClick(event)
+    }
+  }
+
+  const handleMouseEnterWithExisting = (event: React.MouseEvent<HTMLDivElement | HTMLButtonElement>) => {
+    if (children.props?.onMouseEnter) {
+      children.props.onMouseEnter(event)
+    }
+    handleMouseEnter()
+  }
+
+  const handleMouseLeaveWithExisting = (event: React.MouseEvent<HTMLDivElement | HTMLButtonElement>) => {
+    if (children.props?.onMouseLeave) {
+      children.props.onMouseLeave(event)
+    }
+    handleMouseLeave()
+  }
+
+  const handleFocusWithExisting = (event: React.FocusEvent<HTMLDivElement | HTMLButtonElement>) => {
+    if (children.props?.onFocus) {
+      children.props.onFocus(event)
+    }
+    handleFocus()
+  }
+
+  const handleBlurWithExisting = (event: React.FocusEvent<HTMLDivElement | HTMLButtonElement>) => {
+    if (children.props?.onBlur) {
+      children.props.onBlur(event)
+    }
+    handleBlur()
+  }
+
+  return React.cloneElement(children, {
+    id: triggerId,
+    "aria-describedby": contentId,
+    tabIndex: children.props?.tabIndex ?? 0,
+    onMouseEnter: handleMouseEnterWithExisting,
+    onMouseLeave: handleMouseLeaveWithExisting,
+    onFocus: handleFocusWithExisting,
+    onBlur: handleBlurWithExisting,
+    onClick: handleClick,
+  })
 }
 
 function TooltipContent({
   className,
-  sideOffset = 0,
   children,
-  ...props
-}: React.ComponentProps<typeof TooltipPrimitive.Content>) {
+}: {
+  className?: string
+  children: React.ReactNode
+}) {
+  const context = React.useContext(TooltipContext)
+
+  if (!context || !context.open) {
+    return null
+  }
+
+  const { contentId, triggerId } = context
+
   return (
-    <TooltipPrimitive.Portal>
-      <TooltipPrimitive.Content
-        data-slot="tooltip-content"
-        sideOffset={sideOffset}
-        className={cn(
-          "bg-primary text-primary-foreground animate-in fade-in-0 zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 z-50 w-fit origin-(--radix-tooltip-content-transform-origin) rounded-md px-3 py-1.5 text-xs text-balance",
-          className
-        )}
-        {...props}
-      >
+    <div
+      id={contentId}
+      role="tooltip"
+      aria-hidden={!context.open}
+      className={cn(
+        "cursor-cell absolute left-1/2 top-full z-50 mt-2 -translate-x-1/2 min-w-[180px] max-w-[240px] rounded-lg bg-primary px-3 py-2 text-xs text-primary-foreground shadow-xl",
+        className
+      )}
+    >
+      <div className="absolute left-1/2 top-0 -translate-x-1/2 -translate-y-1/2 rotate-45 bg-primary h-3 w-3" />
+      <div className="relative text-center">
         {children}
-        <TooltipPrimitive.Arrow className="bg-primary fill-primary z-50 size-2.5 translate-y-[calc(-50%_-_2px)] rotate-45 rounded-[2px]" />
-      </TooltipPrimitive.Content>
-    </TooltipPrimitive.Portal>
+      </div>
+    </div>
   )
 }
 
-export { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider }
+export { Tooltip, TooltipTrigger, TooltipContent }

@@ -24,18 +24,6 @@ export function CardInfoUserBigNumber({ title, about, Icon, isPoints, value, isF
             <div className='flex items-center justify-between'>
                 <div className='flex items-center gap-2'>
                     <p className='text-xl text-primarybege font-inter font-bold'>{title}</p>
-                    {about && (
-                        <Tooltip>
-                            <TooltipTrigger>
-                                <div className='flex items-center justify-center border-primarylightblue rounded-full text-primarylightblue border-1 w-5 h-5'>
-                                    !
-                                </div>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                                <p className="max-w-70 text-center">{about}</p>
-                            </TooltipContent>
-                        </Tooltip>
-                    )}
                 </div>
 
                 {Icon && !isPoints ? (

@@ -22,3 +22,10 @@ export const ACHIEVEMENT_THRESHOLDS = {
     SENIOR_LEVEL: 'Senior',
     POLYGLOT_LANGUAGES: 15,
 } as const
+
+// Linguagens que não são consideradas linguagens de programação
+export const NON_PROGRAMMING_LANGUAGES = new Set([
+    'HTML', 'CSS', 'SCSS', 'Sass', 'Less', 'JSON', 'JSONC', 'JSON5',
+    'YAML', 'TOML', 'XML', 'Markdown', 'XAML', 'SVG', 'Handlebars',
+    'Template Haskell', 'Liquid', 'Jinja', 'Twig', 'HCL', 'INI', 'PROPERTIES'
+])

@@ -52,9 +52,7 @@ export function calculateAchievements(
     const repos = preCalculated?.nonForkRepos ?? user.repositories.nodes.filter(repo => !repo.isFork)
     
     // Usar dados pré-calculados quando disponíveis para manter consistência
-    const totalCommits = preCalculated?.totalCommits ?? repos.reduce((total, repo) => {
-        return total + (repo.defaultBranchRef?.target?.history?.totalCount ?? 0)
-    }, 0)
+    const totalCommits = preCalculated?.totalCommits ?? data.user.contributionsCollection?.contributionCalendar?.totalContributions ?? 0
     
     const totalStars = preCalculated?.totalStars ?? repos.reduce((total, repo) => {
         return total + (repo.stargazerCount ?? 0)

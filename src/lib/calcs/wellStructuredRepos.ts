@@ -9,7 +9,7 @@ export function identifyWellStructuredRepos(repos: Repository[]): WellStructured
             homepageUrl: repo.homepageUrl,
             stars: repo.stargazerCount ?? 0,
             forks: repo.forkCount ?? 0,
-            mainLanguage: repo.languages?.nodes?.[0]?.name,
+            mainLanguage: repo.primaryLanguage?.name ?? undefined,
         }))
         .slice(0, 5)
 }

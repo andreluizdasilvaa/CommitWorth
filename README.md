@@ -1,4 +1,18 @@
-# CommitWorth
+<h1 align="center">CommitWorth</h1>
+
+<p align="center">
+  <strong>Veja Quanto Você Gerou de Valor com Seus Commits do Github e Outros Dados Legais!</strong>
+</p>
+
+<p align="center">
+   <a href="https://commitworth.vercel.app/">commitworth.vercel.app</a>
+</p>
+
+<p align="center">
+  <img src="public/github-hero.png" alt="Git City — Where Code Builds Cities" width="300" />
+</p>
+
+---
 
 ## Sumário
 
@@ -224,18 +238,14 @@ Para testar o projeto localmente:
    ```bash
    npm run dev
    ```
+   - Observação: o script `dev` usa `--turbopack` (ver `package.json`).
 
 5. **Acesse:** http://localhost:3000
 
 ## 🛠️ Tecnologias Utilizadas
 
-- **Frontend:** Next.js 15 + React 19 + TypeScript
-- **Styling:** TailwindCSS 4 + CSS personalizado
-- **API:** GraphQL + GitHub API
-- **Gráficos:** Recharts
-- **UI Components:** Radix UI + Lucide React
-- **3D Effects:** OGL
-- **Geração de Imagens:** html-to-image
+ - **Cache / Persistência leve:** Upstash Redis
+ - **Imagens remotas:** Next.js `images.remotePatterns` permite avatars do GitHub
 
 ---
 

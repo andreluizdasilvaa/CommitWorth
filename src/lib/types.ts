@@ -1,4 +1,4 @@
-import { RateLimitInfo } from "./calcs/formatRateLimitInfo"
+import { RateLimitInfo } from "./calcs/rateLimitInfo"
 import { StackAnalysis } from "./calcs/stackAnalysis"
 
 export interface UserProps {
@@ -34,6 +34,9 @@ export interface GitHubStatsResponse {
                         name: string
                     }[]
                 }
+                primaryLanguage: {
+                    name: string | null
+                } | null
                 defaultBranchRef: {
                     target: {
                         history: {
@@ -86,6 +89,9 @@ export interface Repository {
             name: string
         }[]
     }
+    primaryLanguage: {
+        name: string | null
+    } | null
     defaultBranchRef: {
         target: {
             history: {

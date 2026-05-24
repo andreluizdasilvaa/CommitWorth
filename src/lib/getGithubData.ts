@@ -1,5 +1,5 @@
 import { graphqlClient } from "./api/graphqlClient"
-import { queryGitHubData } from "./api/queryGitHubData"
+import { buildQueryGitHubData } from "./api/queryGitHubData"
 import { 
     GitHubCompleteData, 
     GitHubStatsResponse, 
@@ -7,20 +7,23 @@ import {
     UserProps 
 } from "@/lib/types"
 
-import { calculateAchievements } from "./calcs/calculateAchievements"
-import { analyzeStackAndSeniority } from "./calcs/stackAnalysis"
-import { formatRateLimitInfo } from "./calcs/formatRateLimitInfo"
-import { calculateLanguageStats } from "./calcs/calculateLanguageStats"
-import { calcCommitStarsForks } from "./calcs/calcCommitStarsForks"
-import { getPopularContributions } from "./calcs/getPopularContributions"
-import { identifyWellStructuredRepos } from "./calcs/identifyWellStructuredRepos"
-import { calculateValorAgregado } from "./calcs/calculateValorAgregado"
-import { calculatePontosTotais } from "./calcs/calculatePontosTotais"
-import { calcStructuredRepoScores } from "./calcs/calcStructuredRepoScores"
+import {
+  calculateAchievements,
+  analyzeStackAndSeniority,
+  formatRateLimitInfo,
+  calculateLanguageStats,
+  calcCommitStarsForks,
+  getPopularContributions,
+  identifyWellStructuredRepos,
+  calculateValorAgregado,
+  calculatePontosTotais,
+  calcStructuredRepoScores,
+} from "./calcs"
 
 async function fetchGitHubData(username: string): Promise<GitHubStatsResponse> {
     try {
-        return await graphqlClient.request<GitHubStatsResponse>(queryGitHubData, { login: username })
+        const query = buildQueryGitHubData();
+        return await graphqlClient.request<GitHubStatsResponse>(query, { login: username })
     } catch (error) {
         throw error
     }
@@ -28,7 +31,7 @@ async function fetchGitHubData(username: string): Promise<GitHubStatsResponse> {
 
 export async function getGitHubStatsGraphQL(username: string): Promise<GitHubCompleteData> {
     const data = await fetchGitHubData(username)
-    
+
     const rateLimitInfo = formatRateLimitInfo(data.rateLimit)
     
     const userData: UserProps = {
@@ -37,9 +40,8 @@ export async function getGitHubStatsGraphQL(username: string): Promise<GitHubCom
         avatar_url: data.user.avatarUrl
     }
     
-    // Filtrar repositórios (excluir forks)
-    const repos = data.user.repositories.nodes
-    const nonForkRepos:Repository[] = repos.filter(repo => !repo.isFork)
+    // Repositórios próprios (sem forks) - já filtrados pela query GraphQL
+    const nonForkRepos:Repository[] = data.user.repositories.nodes
     
     const { totalCommits, totalStars, totalForks } = calcCommitStarsForks(data, nonForkRepos)
     
@@ -48,7 +50,7 @@ export async function getGitHubStatsGraphQL(username: string): Promise<GitHubCom
     
     // Obter contribuições populares
     const popularContributions = getPopularContributions(nonForkRepos)
-    
+
     // Identificar repositórios bem estruturados
     const wellStructuredRepos = identifyWellStructuredRepos(nonForkRepos)
 

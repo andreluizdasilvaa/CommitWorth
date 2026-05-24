@@ -103,14 +103,14 @@ export default async function UserDetails({ params }: PageProps) {
                         <div className="flex flex-wrap justify-between items-end">
                             <div /> {/* Aqui terá um botão futuramente */}
                             <div className="flex break-all gap-4 items-center justify-end mt-3 max-sm:ml-auto">
-                                <div>
+                                <a href={`https://github.com/${userData.login}`} target="_blank" rel="noopener noreferrer">
                                     <h2 className="text-primarybege font-inter text-4xl font-black">
                                         {userData.name}
                                     </h2>
                                     <p className="text-primarybege font-medium">
                                         @{userData.login}
                                     </p>
-                                </div>
+                                </a>
 
                                 <Image
                                     src={userData.avatar_url}
@@ -130,13 +130,15 @@ export default async function UserDetails({ params }: PageProps) {
                             />
                             <CardInfoUserSmall
                                 Icon={Box}
-                                title="Total de Repositórios"
+                                title="Repositórios analisados"
                                 value={repoCountExcludingForks}
+                                about="Repositórios forkados não são incluidos."
                             />
                             <CardInfoUserSmall
                                 Icon={GitCommit}
-                                title="Total de Commits"
+                                title="Total de commits"
                                 value={totalCommits}
+                                about="Número total de commits de todos os seus repositórios públicos de até 5 anos atrás."
                             />
                         </div>
 
@@ -149,14 +151,13 @@ export default async function UserDetails({ params }: PageProps) {
                                 Icon={DollarSign}
                                 title="Valor agregado"
                                 value={valorAgregado}
-                                about={`Valor fictício que ${userData.name || userData.login} agrega mensalmente com base na sua atividade pública no GitHub, considerando estrelas, forks e commits.`}
                             />
 
                             {languageRepoCount.length > 1 && (
                                 <CardLanguageChart
                                     title="Linguagens mais utilizadas"
                                     value={languageRepoCount}
-                                    about="Aqui mostramos só a linguagem principal de cada projeto seu."
+                                    about="Linguagens que aparecem com mais frequência nos seus projetos públicos."
                                 />
                             )}
 

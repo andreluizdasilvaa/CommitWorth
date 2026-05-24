@@ -44,7 +44,7 @@ export default function About() {
                             <li>O usuário pode gerar um card personalizado com suas conquistas e stack.</li>
                         </ol>
                         <div className="bg-primarydark text-primarybege rounded-lg px-4 py-2 mt-4 border border-primarylightblue">
-                            <b className="text-secondaryyellow">Atenção:</b> Todos os cálculos são realizados a partir de <b>apenas 1 requisição</b> que busca os <b>100 primeiros repositórios</b> públicos do usuário no GitHub. Se você possui mais de 100 repositórios, os dados exibidos podem não refletir todo o seu histórico. Estamos trabalhando para ampliar esse limite em versões futuras!
+                            <b className="text-secondaryyellow">Atenção:</b> Todos os cálculos são realizados a partir de <b>apenas 1 requisição</b> que busca os <b>100 repositórios mais recentes</b> públicos do usuário no GitHub. Se você possui mais de 100 repositórios, os dados exibidos podem não refletir todo o seu histórico. Estamos trabalhando para ampliar esse limite em versões futuras!
                         </div>
                     </section>
                     <section className="mb-8">
@@ -52,7 +52,7 @@ export default function About() {
                         <ul className="list-disc list-inside ml-4 space-y-1">
                             <li><b className="text-secondaryyellow">Total de Estrelas:</b> Soma das estrelas em todos os repositórios públicos.</li>
                             <li><b className="text-secondaryyellow">Total de Repositórios:</b> Quantidade de repositórios públicos (excluindo forks).</li>
-                            <li><b className="text-secondaryyellow">Total de Commits:</b> Soma dos commits em todos os repositórios.</li>
+                            <li><b className="text-secondaryyellow">Total de Commits:</b> Soma das contribuições registradas nos últimos 5 anos, com base nos dados públicos do GitHub.</li>
                             <li><b className="text-secondaryyellow">Valor Agregado:</b> Valor fictício calculado com base em commits, estrelas e forks:</li>
                         </ul>
                         <div className="bg-primarydark text-primarybege rounded-lg px-4 py-2 my-3 text-sm border border-primarylightblue w-fit">

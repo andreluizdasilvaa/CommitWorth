@@ -1,6 +1,12 @@
 import { Medal, Code, TrendingUp, Clock } from 'lucide-react'
 import { StackAnalysis } from '@/lib/calcs/stackAnalysis' 
 
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipTrigger,
+} from "@/components/ui/tooltip"
+
 interface StackAnalysisCardProps {
     stackAnalysis: StackAnalysis
     className?: string
@@ -63,9 +69,22 @@ export function StackAnalysisCard({ stackAnalysis, className }: StackAnalysisCar
                         <p className={`text-4xl font-black ${getSeniorityColor(stackAnalysis.seniorityLevel)}`}>
                             {stackAnalysis.seniorityLevel}
                         </p>
-                        <p className='text-primarybege text-sm opacity-80'>
-                            Score: {stackAnalysis.seniorityScore}/100
-                        </p>
+                        <div className='flex items-center gap-2'>
+                            <p className='text-primarybege text-sm opacity-80'>
+                                Score: {stackAnalysis.seniorityScore}/100
+                            </p>
+
+                            <Tooltip>
+                                <TooltipTrigger>
+                                    <div className='flex items-center justify-center border-primarylightblue rounded-full text-primarylightblue border-1 w-5 h-5'>
+                                        !
+                                    </div>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                    <p className="max-w-50 text-center">Um número que indica sua experiência na linguagem que você usa mais.</p>
+                                </TooltipContent>
+                            </Tooltip>
+                        </div>
                     </div>
 
                     {/* Resumo da Experiência */}
@@ -82,7 +101,7 @@ export function StackAnalysisCard({ stackAnalysis, className }: StackAnalysisCar
                                 </span>
                             </p>
                             <p className='text-primarybege'>
-                                <span className='opacity-80'>Linguagens dominadas:</span> 
+                                <span className='opacity-80'>Linguagens utilizadas:</span> 
                                 <span className='text-secondarygreen ml-1 font-semibold'>
                                     {stackAnalysis.stackSummary.totalLanguages}
                                 </span>
@@ -90,11 +109,24 @@ export function StackAnalysisCard({ stackAnalysis, className }: StackAnalysisCar
                         </div>
                     </div>
                 </div>
-                
+
                 {/* Top 3 Linguagens */}
                 {stackAnalysis.stackExperience.length > 0 && (
                     <div className='bg-secondaryblue p-4 rounded-lg'>
-                        <h3 className='text-primarybege text-xl font-semibold mb-3'>Top Linguagens</h3>
+                        <div className='flex items-center gap-2 mb-3'>
+                            <h3 className='text-primarybege text-xl font-semibold'>Top Linguagens</h3>
+
+                            <Tooltip>
+                                <TooltipTrigger>
+                                    <div className='flex items-center justify-center border-primarylightblue rounded-full text-primarylightblue border-1 w-5 h-5'>
+                                        !
+                                    </div>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                    <p>Mostra as linguagens mais frequentes no seu histórico de projetos.</p>
+                                </TooltipContent>
+                            </Tooltip>
+                        </div>
                         <div className='space-y-2'>
                             {stackAnalysis.stackExperience.slice(0, 3).map((exp, index) => (
                                 <div key={exp.language} className='flex justify-between items-center'>
