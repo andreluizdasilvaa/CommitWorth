@@ -40,7 +40,7 @@ export function CardInfoUserBigNumber({ title, about, Icon, isPoints, value, isF
             <div className='w-full h-full flex justify-center items-center'>
                 <p style={
                     isFork ? { color: '#F0EBD8' } : { color: '#32E875' }
-                } className='text-center text-6xl lg:text-7xl font-inter font-black truncate max-w-full px-2'>
+                } className='text-center max-sm:text-[clamp(2rem,10vw,3.25rem)] sm:text-6xl lg:text-7xl font-inter font-black leading-none max-w-full px-2 max-sm:break-all lg:truncate'>
                     {!isPoints && !isFork && (
                         <span>R$</span>
                     )}

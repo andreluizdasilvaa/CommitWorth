@@ -87,7 +87,7 @@ export function Footer({
             <footer className="w-full">
                 <div className="flex items-center justify-center xl:justify-between flex-wrap px-4 sm:px-12 pb-8 sm:pt-12 h-full bg-primaryblue rounded-t-3xl gap-8">
 
-                    <div className="flex items-center justify-center max-w-[500px] max-h-[257px] scale-[0.30] sm:scale-[0.45] ">
+                    <div className="flex items-center justify-center max-w-[500px] max-h-[257px] scale-[0.30] sm:scale-[0.45]">
 
                         <div
                             ref={cardRef}

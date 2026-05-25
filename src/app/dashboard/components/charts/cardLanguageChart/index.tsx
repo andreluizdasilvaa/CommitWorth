@@ -33,10 +33,10 @@ interface CardProps {
 
 export function CardLanguageChart({ title, value, about }: CardProps) {
     return (
-        <div className="flex flex-col gap-5 w-full max-h-[450px] shadow-2xl rounded-2xl bg-primaryblue p-5 pb-10">
+        <div className="flex flex-col gap-4 w-full max-h-none sm:max-h-[450px] shadow-2xl rounded-2xl bg-primaryblue p-4 sm:p-5 pb-6 sm:pb-10">
             <div className="flex items-center justify-between">
                 <div className='flex items-center gap-2'>
-                    <p className='text-xl text-primarybege font-inter font-bold'>{title}</p>
+                    <p className='text-lg sm:text-xl text-primarybege font-inter font-bold'>{title}</p>
                     {about && (
                         <Tooltip>
                             <TooltipTrigger>
@@ -52,7 +52,7 @@ export function CardLanguageChart({ title, value, about }: CardProps) {
                 </div>
             </div>
 
-            <ChartContainer config={chartConfig} className="min-h-[300px] w-full">
+            <ChartContainer config={chartConfig} className="min-h-[220px] sm:min-h-[300px] w-full">
                 <BarChart layout="vertical" data={value}>
                     <CartesianGrid horizontal={false} vertical={false} />
                     <XAxis
@@ -66,6 +66,7 @@ export function CardLanguageChart({ title, value, about }: CardProps) {
                         dataKey="language"
                         tickLine={false}
                         axisLine={false}
+                        width={90}
                     />
                     <ChartTooltip content={<ChartTooltipContent />} />
                     <Bar dataKey="count" fill="var(--color-count)" radius={[0, 12, 12, 0]} />

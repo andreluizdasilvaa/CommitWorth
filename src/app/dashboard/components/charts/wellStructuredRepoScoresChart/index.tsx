@@ -33,10 +33,10 @@ interface CardProps {
 
 export function WellStructuredRepoScoresChart({ title, value, about }: CardProps) {
     return (
-        <div className="flex flex-col gap-5 w-full max-h-[350px] shadow-2xl rounded-2xl bg-primaryblue p-5 pb-10">
+        <div className="flex flex-col gap-4 w-full max-h-none sm:max-h-[350px] shadow-2xl rounded-2xl bg-primaryblue p-4 sm:p-5 pb-6 sm:pb-10">
             <div className="flex items-center justify-between">
                 <div className='flex items-center gap-2'>
-                    <p className='text-xl text-primarybege font-inter font-bold'>{title}</p>
+                    <p className='text-lg sm:text-xl text-primarybege font-inter font-bold'>{title}</p>
                     {about && (
                         <Tooltip>
                             <TooltipTrigger>
@@ -52,7 +52,7 @@ export function WellStructuredRepoScoresChart({ title, value, about }: CardProps
                 </div>
             </div>
 
-            <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
+            <ChartContainer config={chartConfig} className="min-h-[180px] sm:min-h-[200px] w-full">
                 <BarChart accessibilityLayer data={value}>
                     <XAxis
                         dataKey="name"

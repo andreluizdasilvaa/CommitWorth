@@ -34,43 +34,45 @@ export function StackAnalysisCard({ stackAnalysis, className }: StackAnalysisCar
     }
 
     return (
-        <div className={`flex flex-col gap-5 w-full min-h-64 rounded-2xl shadow-2xl bg-primaryblue p-5 pb-10 ${className || ""}`}>
+        <div className={`flex flex-col gap-4 w-full min-h-64 rounded-2xl shadow-2xl bg-primaryblue p-4 sm:p-5 pb-6 sm:pb-10 ${className || ""}`}>
             <div className='flex gap-2 items-center justify-between'>
                 <div className='flex items-center gap-2'>
-                    <p className='text-xl text-primarybege font-inter font-bold'>Análise de Stack & Senioridade</p>
+                    <p className='text-lg sm:text-xl text-primarybege font-inter font-bold'>Análise de Stack & Senioridade</p>
                 </div>
                 
                 <div className='flex items-center gap-2'>
-                    {getSeniorityIcon()}
+                    <span className='scale-90 sm:scale-100'>
+                        {getSeniorityIcon()}
+                    </span>
                 </div>
             </div>
 
             <div className='flex flex-col gap-4'>
-                <div className='grid grid-cols-1 items-center justify-center md:grid-cols-2 lg:grid-cols-3 gap-6'>
+                <div className='grid grid-cols-1 items-center justify-center md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6'>
 
                     {/* Stack Principal */}
-                    <div className='bg-secondaryblue p-4 rounded-lg'>
-                        <h3 className='text-primarybege font-semibold mb-3 flex items-center gap-2'>
-                            <Code size={18} />
+                    <div className='bg-secondaryblue p-3 sm:p-4 rounded-lg'>
+                        <h3 className='text-primarybege text-sm sm:text-base font-semibold mb-2 sm:mb-3 flex items-center gap-2'>
+                            <Code size={16} className='sm:size-[18px]' />
                             Stack Principal
                         </h3>
-                        <p className='text-secondarygreen text-3xl font-bold break-all'>{stackAnalysis.primaryStack}</p>
-                        <p className='text-primarybege text-sm opacity-80'>
+                        <p className='text-secondarygreen text-2xl sm:text-3xl font-bold break-all'>{stackAnalysis.primaryStack}</p>
+                        <p className='text-primarybege text-xs sm:text-sm opacity-80'>
                             {stackAnalysis.stackSummary.primaryLanguagePercentage}% dos seus repositórios
                         </p>
                     </div>
 
                     {/* Nível de Senioridade */}
-                    <div className='bg-secondaryblue p-4 rounded-lg '>
-                        <h3 className='text-primarybege font-semibold mb-3 flex items-center gap-2'>
-                            <TrendingUp size={18} />
+                    <div className='bg-secondaryblue p-3 sm:p-4 rounded-lg '>
+                        <h3 className='text-primarybege text-sm sm:text-base font-semibold mb-2 sm:mb-3 flex items-center gap-2'>
+                            <TrendingUp size={16} className='sm:size-[18px]' />
                             Nível de Senioridade
                         </h3>
-                        <p className={`text-4xl font-black ${getSeniorityColor(stackAnalysis.seniorityLevel)}`}>
+                        <p className={`text-3xl sm:text-4xl font-black ${getSeniorityColor(stackAnalysis.seniorityLevel)}`}>
                             {stackAnalysis.seniorityLevel}
                         </p>
                         <div className='flex items-center gap-2'>
-                            <p className='text-primarybege text-sm opacity-80'>
+                            <p className='text-primarybege text-xs sm:text-sm opacity-80'>
                                 Score: {stackAnalysis.seniorityScore}/100
                             </p>
 
@@ -88,15 +90,15 @@ export function StackAnalysisCard({ stackAnalysis, className }: StackAnalysisCar
                     </div>
 
                     {/* Resumo da Experiência */}
-                    <div className='bg-secondaryblue p-4 rounded-lg'>
-                        <h3 className='text-primarybege font-semibold mb-3 flex items-center gap-2'>
-                            <Clock size={18} />
+                    <div className='bg-secondaryblue p-3 sm:p-4 rounded-lg'>
+                        <h3 className='text-primarybege text-sm sm:text-base font-semibold mb-2 sm:mb-3 flex items-center gap-2'>
+                            <Clock size={16} className='sm:size-[18px]' />
                             Experiência
                         </h3>
                         <div className='grid grid-cols-1 gap-2 text-sm'>
                             <p className='text-primarybege'>
                                 <span className='opacity-80'>Tempo de experiência:</span><br />
-                                <span className='text-secondarygreen text-2xl font-bold'>
+                                <span className='text-secondarygreen text-xl sm:text-2xl font-bold'>
                                     {stackAnalysis.stackSummary.experienceRange}
                                 </span>
                             </p>
@@ -112,9 +114,9 @@ export function StackAnalysisCard({ stackAnalysis, className }: StackAnalysisCar
 
                 {/* Top 3 Linguagens */}
                 {stackAnalysis.stackExperience.length > 0 && (
-                    <div className='bg-secondaryblue p-4 rounded-lg'>
+                    <div className='bg-secondaryblue p-3 sm:p-4 rounded-lg'>
                         <div className='flex items-center gap-2 mb-3'>
-                            <h3 className='text-primarybege text-xl font-semibold'>Top Linguagens</h3>
+                            <h3 className='text-primarybege text-lg sm:text-xl font-semibold'>Top Linguagens</h3>
 
                             <Tooltip>
                                 <TooltipTrigger>
@@ -131,16 +133,16 @@ export function StackAnalysisCard({ stackAnalysis, className }: StackAnalysisCar
                             {stackAnalysis.stackExperience.slice(0, 3).map((exp, index) => (
                                 <div key={exp.language} className='flex justify-between items-center'>
                                     <div className='flex items-center gap-2'>
-                                        <span className='text-secondarygreen font-mono text-sm px-2 py-1 bg-primaryblue rounded'>
+                                        <span className='text-secondarygreen font-mono text-xs sm:text-sm px-2 py-1 bg-primaryblue rounded'>
                                             #{index + 1}
                                         </span>
-                                        <span className='text-primarybege text-lg font-semibold'>{exp.language}</span>
+                                        <span className='text-primarybege text-base sm:text-lg font-semibold'>{exp.language}</span>
                                     </div>
                                     <div className='text-right'>
-                                        <p className='text-secondarygreen text-sm font-semibold'>
+                                        <p className='text-secondarygreen text-xs sm:text-sm font-semibold'>
                                             {exp.repositories} repos
                                         </p>
-                                        <p className='text-primarybege text-xs opacity-70'>
+                                        <p className='text-primarybege text-[10px] sm:text-xs opacity-70'>
                                             {exp.yearsOfExperience} {exp.yearsOfExperience === 1 ? 'ano' : 'anos'}
                                         </p>
                                     </div>

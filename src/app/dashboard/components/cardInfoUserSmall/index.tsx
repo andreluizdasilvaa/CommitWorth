@@ -15,10 +15,10 @@ interface CardInfoUserSmallProps {
 
 export function CardInfoUserSmall({ title, Icon, value, className, about }: CardInfoUserSmallProps) {
     return (
-        <div className={`flex flex-col gap-5 w-full rounded-2xl bg-primaryblue p-5 pb-10 shadow-2xl ${className || ""}`}>
+        <div className={`flex flex-col gap-4 w-full rounded-2xl bg-primaryblue p-4 sm:p-5 pb-6 sm:pb-10 shadow-2xl ${className || ""}`}>
             <div className='flex items-center justify-between'>
                 <div className='flex items-center gap-2'>
-                    <p className='text-xl text-primarybege font-inter font-bold'>{title}</p>
+                    <p className='text-lg sm:text-xl text-primarybege font-inter font-bold'>{title}</p>
                     {about && (
                         <Tooltip>
                             <TooltipTrigger>
@@ -33,10 +33,10 @@ export function CardInfoUserSmall({ title, Icon, value, className, about }: Card
                     )}
                 </div>
 
-                <Icon size={30} color='#613DC1' />
+                <Icon size={24} className='sm:size-[30px]' color='#613DC1' />
             </div>
 
-            <p className='text-center truncate text-6xl font-inter font-black text-primarybege'>{value}</p>
+            <p className='text-center text-4xl sm:text-6xl font-inter font-black text-primarybege break-words leading-none'>{value}</p>
         </div>
     )
 }
